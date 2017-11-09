@@ -4,11 +4,20 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+const { Client } = require('pg');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+// configure postgres
+app.locals.pg_client = new Client ({
+    connectionString: 'postgres://alkmcqiceuttgn:39c145375cf3471917847254875a23c8aaff06ab2e2b25eab95855092f40dd4f@ec2-54-163-255-181.compute-1.amazonaws.com:5432/df04ibepedjmrm',
+    ssl: true,
+});
+app.locals.pg_client.connect();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,4 +52,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+//module.exports = app;
+app.listen(8080, function () {
+    console.log("Server running");
+});

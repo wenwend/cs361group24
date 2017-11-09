@@ -6,8 +6,8 @@
     "start": "node ./bin/www"
   },
   "engines": {
-      "node": "~6.10.2",
-      "npm": "3.10.10"
+    "node": "~6.10.2",
+    "npm": "3.10.10"
   },
   "dependencies": {
     "body-parser": "~1.17.1",
@@ -16,6 +16,7 @@
     "express": "~4.15.2",
     "jade": "~1.11.0",
     "morgan": "~1.8.1",
+    "pg": "^7.4.0",
     "serve-favicon": "~2.4.2"
   }
 }
