@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  div(id="signupForm")
+    form(action="/postVendor", method="post")
+      fieldset(id="addB")
+        legend Food Bank Sign Up
+        label Name
+        input(type="text", name="name")
+        br
+        label Email 
+        input(type="text", name="email")
+        br
+        label Phone 
+        input(type="text", name="phone")
+        br
+        label Open At 
+        input(type="time", name="open_at")
+        br
+        label Close At 
+        input(type="time", name="close_at")
+        br
+        label Open Date 
+        input(type="date", name="open_date")
+        br
+        input(type="submit", id="sendNewBank")
+  
+  
+  
+  
+  
+  
+  

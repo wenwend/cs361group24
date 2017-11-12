@@ -97,3 +97,20 @@ module.exports.postVendor = function(req, res, next) {
         res.render('login')
     })
 };
+/* GET new bank */
+module.exports.addBank = function(req, res, next) {
+    res.render('addBank');
+};
+
+/* POST new bank */
+module.exports.postBank = function(req, res, next) {
+    const vendor = req.body
+    client.query('INSERT INTO bank (type, name, email, phone, open_at, close_at, open_date) VALUES ($1, $2, $3, $4, $5, $6, $7);', 
+        ['B', bank.name, bank.email, bank.phone,
+        bank.open_at, bank.close_at, bank,open_date], function (err, result) {
+        if (err) {
+            return next(err)
+        }
+        res.send(200)
+    })
+};

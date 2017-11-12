@@ -17,6 +17,8 @@ var mainMenu = require('./app_server/routes/mainMenu');
 var addDonation = require('./app_server/routes/addDonation');
 var postDonation = require('./app_server/routes/postDonation');
 var donations = require('./app_server/routes/donations');
+var addBank = require('./app_server/routes/addBank');
+var postBank = require('./app_server/routes/postBank');
 
 var app = express();
 
@@ -46,6 +48,8 @@ app.use('/mainMenu', mainMenu);
 app.use('/addDonation', addDonation);
 app.use('/postDonation', postDonation);
 app.use('/donations', donations);
+app.use('/addBank', addBank);
+app.use('/postBank', postBank);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -70,3 +74,4 @@ module.exports = app;
 app.listen(8080, function () {
     console.log("Server running");
 });
+
