@@ -12,7 +12,7 @@ client.connect();
 
 /* GET home page */
 module.exports.index = function(req, res){
-      res.render('index', { title: 'Express' });
+      res.render('index', { title: 'Food Trucks Fight Hunger' });
 };
 
 /* GET vendors */
