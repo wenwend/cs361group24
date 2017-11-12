@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  div(id="signupForm")
+    form(action="/postVendor", method="post")
+      fieldset(id="addV")
+        legend Vendor Sign Up
+        label Name
+        input(type="text", name="name")
+        br
+        label Email 
+        input(type="text", name="email")
+        br
+        input(type="submit", id="sendNewVendor")
+  
+  
+  
+  
+  
+  
+  
+  
