@@ -10,6 +10,8 @@ var index = require('./app_server/routes/index');
 var vendors = require('./app_server/routes/vendors');
 var addVendor = require('./app_server/routes/addVendor');
 var postVendor = require('./app_server/routes/postVendor');
+var addBank = require('./app_server/routes/addBank');
+var postBank = require('./app_server/routes/postBank');
 
 var app = express();
 
@@ -29,6 +31,8 @@ app.use('/', index);
 app.use('/vendors', vendors);
 app.use('/addVendor', addVendor);
 app.use('/postVendor', postVendor);
+app.use('/addBank', addBank);
+app.use('/postBank', postBank);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -53,3 +57,4 @@ module.exports = app;
 app.listen(8080, function () {
     console.log("Server running");
 });
+
