@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  div(id="newDonationForm")
+    form(action="/postDonation", method="post")
+      fieldset(id="addD")
+        legend Add a New Donation
+        label Status
+        input(type="text", name="dStatus")
+        br
+        label Date 
+        input(type="date", name="date")
+        br
+        input(type="submit", id="sendNewDonation")
+ 

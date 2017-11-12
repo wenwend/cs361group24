@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var ctrlMain = require('../controllers/main');
 
-/* GET addVendor page */
-router.get('/', ctrlMain.addVendor);
+/* GET donations */
+router.get('/', ctrlMain.donations);
 
 module.exports = router;

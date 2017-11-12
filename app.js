@@ -4,12 +4,19 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 // routes
 var index = require('./app_server/routes/index');
 var vendors = require('./app_server/routes/vendors');
 var addVendor = require('./app_server/routes/addVendor');
 var postVendor = require('./app_server/routes/postVendor');
+var login = require('./app_server/routes/login');
+var postLogin = require('./app_server/routes/postLogin');
+var mainMenu = require('./app_server/routes/mainMenu');
+var addDonation = require('./app_server/routes/addDonation');
+var postDonation = require('./app_server/routes/postDonation');
+var donations = require('./app_server/routes/donations');
 
 var app = express();
 
@@ -23,12 +30,22 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// session cookie
+app.use(session({ secret: 'keyboard car', cookie: {maxAge: 60000 }}));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/vendors', vendors);
 app.use('/addVendor', addVendor);
 app.use('/postVendor', postVendor);
+app.use('/login', login);
+app.use('/postLogin', postLogin);
+app.use('/mainMenu', mainMenu);
+app.use('/addDonation', addDonation);
+app.use('/postDonation', postDonation);
+app.use('/donations', donations);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
