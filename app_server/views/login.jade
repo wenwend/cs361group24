@@ -4,11 +4,20 @@ block content
   div(id="loginForm")
     form(action="/postLogin", method="post")
       fieldset(id="loginField")
-        legend Login
+        legend Vendor Login
         label Name
         input(type="text", name="name")
         br
         input(type="submit", id="loginSubmit")
+
+  div(id="loginFormBank")
+    form(action="/postLoginBank", method="post")
+      fieldset(id="loginBankField")
+        legend Food Bank Login
+        label Name
+        input(type="text", name="name")
+        br
+        input(type="submit", id="loginBankSubmit")
   
   
   

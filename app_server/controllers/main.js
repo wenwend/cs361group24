@@ -39,9 +39,33 @@ module.exports.postLogin = function(req, res, next) {
     })
 };
 
+/* POST login bank*/
+module.exports.postLoginBank = function(req, res, next) {
+    const login = req.body
+    client.query('SELECT id, name FROM bank WHERE name=($1);', [login.name], function (err, result) {
+        if (err) {
+            return next(err)
+        }
+        //res.send(200)
+        if (result.rows[0] != undefined) {
+            req.session.userId = result.rows[0].id;
+            req.session.userName = result.rows[0].name;
+            res.render('mainMenuBank', { name: req.session.userName });
+        } 
+        else {
+            res.render('login');
+        }
+    })
+};
+
 /* GET mainMenu page */
 module.exports.mainMenu = function(req, res){
       res.render('mainMenu');
+};
+
+/* GET mainMenuBank page */
+module.exports.mainMenuBank = function(req, res){
+      res.render('mainMenuBank');
 };
 
 /* GET addDonation page */
@@ -105,13 +129,14 @@ module.exports.addBank = function(req, res, next) {
 
 /* POST new bank */
 module.exports.postBank = function(req, res, next) {
-    const vendor = req.body
+    const bank = req.body
     client.query('INSERT INTO bank (type, name, email, phone, open_at, close_at, open_date) VALUES ($1, $2, $3, $4, $5, $6, $7);', 
         ['B', bank.name, bank.email, bank.phone,
-        bank.open_at, bank.close_at, bank,open_date], function (err, result) {
+        bank.open_at, bank.close_at, bank.open_date], function (err, result) {
         if (err) {
             return next(err)
         }
-        res.send(200)
+        //res.send(200)
+        res.render('login')
     })
 };
