@@ -89,7 +89,8 @@ module.exports.addVendor = function(req, res, next) {
 /* POST new vendor */
 module.exports.postVendor = function(req, res, next) {
     const vendor = req.body
-    client.query('INSERT INTO vendor (type, name, email) VALUES ($1, $2, $3);', ['V', vendor.name, vendor.email], function (err, result) {
+    client.query('INSERT INTO vendor (type, name, email, phone, location, max_dis) VALUES ($1, $2, $3, $4, $5, $6);', ['V', vendor.name, vendor.email,
+        vendor.phone, vendor.location, vendor.max_dis], function (err, result) {
         if (err) {
             return next(err)
         }
