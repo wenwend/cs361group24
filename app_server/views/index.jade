@@ -1,11 +1,26 @@
 extends layout
-
 block content
-  h1= title
-  p Welcome to #{title}
-  a(type='button', href='/login') Login
-  br
-  br
-  a(type='button', href='/addVendor') New Vendor? Please Register for an Account.
-  br
-  a(type='button', href='/addBank') Food Bank? Please Register for an Account.
+	.jumbotron.jumbotro-fluid
+		.container
+					h1.display-3	Food Trucks Fight Hunger 
+					p.lead Welcome to #{title}, from here we will make a change. Every food vendor can donate the food, and help fight against hunger.
+					p
+						a.btn.btn-primary.btn-lg(href='/login', role='button') Login
+	hr.my-4
+	.row
+		.col-sm-6
+			.card.bg-light.mb-3
+				.card-body
+					h4	New Vendor? Please Register for an Account.
+					p
+						a.btn.btn-primary(href='/addVendor',	role='button') Register >>
+		.col-sm-6
+			.card.bg-light.mb-3
+				.card-body
+					h4	New Shelter? Please Register for an Account.
+					p
+						a.btn.btn-primary(href='/addBank',	role='button') Register >>
+		//site footer
+		hr.my-4
+		footer.footer
+			p © Software Engineer <a href="https://hangouts.google.com/group/Z5fd6yFEHsK0bWa03">Group 24
