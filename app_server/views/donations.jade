@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1 Donations!
+
+  ol
+  for d in donations
+    li= d
+  else
+    li You don't have any donations yet!

@@ -91,7 +91,12 @@ module.exports.donations= function(req, res, next) {
         if (err) {
             return next (err)
         }
-        res.json(result.rows)
+       // res.json(result.rows)
+            var donations = []
+            for(var i = 0; i< result.rows.length; i++){
+                    donations[i] = 'Description: ' + result.rows[i].status  + ' Date: ' +  result.rows[i].date;
+            }
+          res.render('donations', {donations: donations})
     })
 };
 
