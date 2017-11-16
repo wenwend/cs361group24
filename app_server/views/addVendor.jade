@@ -1,26 +1,25 @@
 extends layout
 
 block content
-  div(id="signupForm")
+  .container
     form(action="/postVendor", method="post")
-      fieldset(id="addV")
-        legend Vendor Sign Up
-        label Name
-        input(type="text", name="name")
-        br
-        label Email 
-        input(type="text", name="email")
-        br
-        label Phone 
-        input(type="text", name="phone")
-        br
-        label Zip code 
-        input(type="text", name="location")
-        br
-        label Max Distance you'll travel to make a donation? (mi)
-        input(type="text", name="max_dis")
-        br
-        input(type="submit", id="sendNewVendor")
+      legend Food Truck Sign Up
+      .form-group
+        label(for="name") Name
+        input.form-control(type="text", name="name" id="name" placeholder="Enter a name")
+      .form-group
+        label(for="email") Email 
+        input.form-control(type="text", name="email" id="email" placeholder="Enter an email address")
+      .form-group
+        label(for="phone") Phone 
+        input.form-control(type="text", name="phone" id="phone" placeholder="Enter a phone number")
+      .form-group
+        label(for="location") Zip Code 
+        input.form-control(type="text", name="location" id="location" placeholder="Enter a zip code")
+      .form-group
+        label(for="max_dis") Search Radius
+        input.form-control(type="text", name="max_dis" id="max_dis" placeholder="Enter a distance in miles")
+      input.btn.btn-primary(type="submit", id="sendNewVendor")
   
   
   
