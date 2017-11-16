@@ -6,22 +6,22 @@ block content
       legend Food Bank Sign Up
       .form-group
         label(for="name") Name
-        input.form-control(type="text", name="name" id="name" placeholder="Enter a name")
+        input.form-control(required type="text", name="name" id="name" placeholder="Enter a name")
       .form-group
         label(for="email") Email
-        input.form-control(type="text", name="email" id="email" placeholder="Enter an email address")
+        input.form-control(required type="email", name="email" id="email" placeholder="Enter an email address")
       .form-group
         label(for="phone") Phone
-        input.form-control(type="text", name="phone" id="phone" placeholder="Enter a phone number")
+        input.form-control(required type="phone", name="phone" id="phone" placeholder="Enter a phone number")
       .form-group
         label(for="open_at") Open At
-        input.form-control(type="time", name="open_at" id="open_at")
+        input.form-control(required type="time", name="open_at" id="open_at")
       .form-group
         label(for="close_at") Close At
-        input.form-control(type="time", name="close_at" id="close_at")
+        input.form-control(required type="time", name="close_at" id="close_at")
       .form-group
         label(for="location") Location
-        input.form-control(type="text", name="location" onFocus="geolocate()" id="location")
+        input.form-control(required type="text", name="location" onFocus="geolocate()" id="location")
       //- .form-group
       //-   label Business License
       //-   br
