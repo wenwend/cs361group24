@@ -1,6 +1,10 @@
 extends layout
 
 block content
+  if err
+    .alert.alert-danger.aler-dismissable.fade.show(role="alert") #{err}
+      button.close(type="button" data-dismiss="alert" aria-label="close")
+        span(aria-hidden="true") &times;
   div(id="loginForm")
     form(action="/postLogin", method="post")
       fieldset(id="loginField")

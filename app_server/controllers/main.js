@@ -34,7 +34,7 @@ module.exports.postLogin = function(req, res, next) {
             res.render('mainMenu', { name: req.session.userName });
         }
         else {
-            res.render('login');
+            res.render('login', { err: "Food truck " + login.name + " not found." });
         }
     })
 };
@@ -53,7 +53,7 @@ module.exports.postLoginBank = function(req, res, next) {
             res.render('mainMenuBank', { name: req.session.userName });
         }
         else {
-            res.render('login');
+            res.render('login', { err: "Food bank " + login.name + " not found." });
         }
     })
 };
