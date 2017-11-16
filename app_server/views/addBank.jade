@@ -1,29 +1,34 @@
 extends layout
 
 block content
-  div(id="signupForm")
+  .container
     form(action="/postBank", method="post")
-      fieldset(id="addB")
-        legend Food Bank Sign Up
-        label Name
-        input(type="text", name="name")
-        br
-        label Email
-        input(type="text", name="email")
-        br
-        label Phone
-        input(type="text", name="phone")
-        br
-        label Open At
-        input(type="time", name="open_at")
-        br
-        label Close At
-        input(type="time", name="close_at")
-        br
-        label Location
-        input(type="text", name="location" onFocus="geolocate()" id="location")
-        br
-        input(type="submit", id="sendNewBank")
+      legend Food Bank Sign Up
+      .form-group
+        label(for="name") Name
+        input.form-control(type="text", name="name" id="name" placeholder="Enter a name")
+      .form-group
+        label(for="email") Email
+        input.form-control(type="text", name="email" id="email" placeholder="Enter an email address")
+      .form-group
+        label(for="phone") Phone
+        input.form-control(type="text", name="phone" id="phone" placeholder="Enter a phone number")
+      .form-group
+        label(for="open_at") Open At
+        input.form-control(type="time", name="open_at" id="open_at")
+      .form-group
+        label(for="close_at") Close At
+        input.form-control(type="time", name="close_at" id="close_at")
+      .form-group
+        label(for="location") Location
+        input.form-control(type="text", name="location" onFocus="geolocate()" id="location")
+      //- .form-group
+      //-   label Business License
+      //-   br
+      //-   label.custom-file
+      //-     input.custom-file-input(type="file" name="license" id="license")
+      //-     span.custom-file-control
+      input.btn.btn-primary(type="submit", id="sendNewBank")
   script.
     var autocomplete;
     function initAutocomplete() {
@@ -45,4 +50,4 @@ block content
         });
       }
     }
-  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAzhqdfKmZUWtiUssdNxzo95Fg4wL5G54&libraries=places&callback=initAutocomplete")
+  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUwO4rlM06EyXcLkhONF6B41ZYEZGv81Y&libraries=places&callback=initAutocomplete")
