@@ -2,6 +2,8 @@ extends layout
 
 block content
   .container
-  each bank in banks
-    .row
-      h2 bank.name
+    h2 Food Banks in your Area
+    legend Displaying banks within #{radius}m of #{vendor_location}
+  //- for bank in banks
+  //-   .row
+  //-     h2 bank.name
