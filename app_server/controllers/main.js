@@ -134,7 +134,7 @@ module.exports.banks = function(req, res, next) {
                 if (err) {
                     next(err);
                 }
-                res.render('banks', { banks: result.rows, radius: radius, vender_location: vendor_location });
+                res.render('banks', { banks: result.rows, radius: radius, location: vendor_location });
             });
         });
     } else {
