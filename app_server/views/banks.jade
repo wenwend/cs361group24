@@ -11,20 +11,20 @@ block content
           .row
             h3 #{bank.name}
           .row
-            .col-sm-3 Hours:
-            .col-sm-9 
-              .row Opens: #{bank.open_at}
-              .row Closes: #{bank.close_at}
+            .col-sm-2 Hours:
+            .col-sm-10 
+              .row  #{bank.open_at}
+              .row  #{bank.close_at}
           .row
-            .col-sm-3 Contact:
-            .col-sm-9
+            .col-sm-2 Contact:
+            .col-sm-10
               .row
-                a.email Email: #{bank.email}
+                a.email #{bank.email}
               .row
-                a.phone Phone: #{bank.phone}
+                a.phone #{bank.phone}
           .row
-            .col-sm-3 Location:
-            .col-sm-9
+            .col-sm-2 Location:
+            .col-sm-10
               a.location #{bank.location}
   script.
     document.addEventListener("DOMContentLoaded", function(event) {
