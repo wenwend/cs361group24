@@ -123,11 +123,19 @@ module.exports.donations = function(req, res, next) {
 /* GET nearby banks */
 module.exports.banks = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
-        client.query('SELECT location, max_dis FROM vendor WHERE id=($1);', [req.session.userId], function(err, result) {
-            if (err) {
-                return next(err);
+        client.query('SELECT location, max_dis FROM vendor WHERE id=($1);', [req.session.userId], function(verr, vresult) {
+            if (verr) {
+                return next(verr);
             }
-            res.json(result.rows);
+            var radius = vresult.rows[0].max_dis,
+                vendor_location = vresult.rows[0].location;
+
+            client.query('SELECT name, email, phone, location, open_at, close_at FROM bank WHERE location IS NOT NULL', function(err, result) {
+                if (err) {
+                    next(err);
+                }
+                res.json(result.rows);
+            });
         });
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
