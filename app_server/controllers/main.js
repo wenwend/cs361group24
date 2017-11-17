@@ -22,40 +22,38 @@ module.exports.login = function(req, res) {
 
 /* POST login */
 module.exports.postLogin = function(req, res, next) {
-    const login = req.body
+    const login = req.body;
     client.query('SELECT id, name FROM vendor WHERE name=($1);', [login.name], function(err, result) {
         if (err) {
-            return next(err)
+            return next(err);
         }
         //res.send(200)
-        if (result.rows[0] != undefined) {
+        if (result.rows[0] !== undefined) {
             req.session.userId = result.rows[0].id;
             req.session.userName = result.rows[0].name;
             res.render('mainMenu', { name: req.session.userName });
-        }
-        else {
+        } else {
             res.render('login', { err: "Food truck " + login.name + " not found." });
         }
-    })
+    });
 };
 
 /* POST login bank*/
 module.exports.postLoginBank = function(req, res, next) {
-    const login = req.body
+    const login = req.body;
     client.query('SELECT id, name FROM bank WHERE name=($1);', [login.name], function(err, result) {
         if (err) {
-            return next(err)
+            return next(err);
         }
         //res.send(200)
-        if (result.rows[0] != undefined) {
+        if (result.rows[0] !== undefined) {
             req.session.userId = result.rows[0].id;
             req.session.userName = result.rows[0].name;
             res.render('mainMenuBank', { name: req.session.userName });
-        }
-        else {
+        } else {
             res.render('login', { err: "Food bank " + login.name + " not found." });
         }
-    })
+    });
 };
 
 /* GET mainMenu page */
@@ -75,39 +73,39 @@ module.exports.addDonation = function(req, res) {
 
 /* POST new donation */
 module.exports.postDonation = function(req, res, next) {
-    const donation = req.body
+    const donation = req.body;
     client.query('INSERT INTO donation (id, status, date) VALUES ($1, $2, $3);', [req.session.userId, donation.dStatus, donation.date], function(err, result) {
         if (err) {
-            return next(err)
+            return next(err);
         }
         //res.send(200)
-        res.render('mainMenu')
-    })
+        res.render('mainMenu');
+    });
 };
 
 /* GET donations */
 module.exports.donations = function(req, res, next) {
     client.query('SELECT * FROM donation WHERE id=($1);', [req.session.userId], function(err, result) {
         if (err) {
-            return next(err)
+            return next(err);
         }
         // res.json(result.rows)
-        var donations = []
+        var donations = [];
         for (var i = 0; i < result.rows.length; i++) {
             donations[i] = 'Description: ' + result.rows[i].status + ' Date: ' + result.rows[i].date;
         }
-        res.render('donations', { donations: donations })
-    })
+        res.render('donations', { donations: donations });
+    });
 };
 
 /* GET vendors */
 module.exports.vendors = function(req, res, next) {
     client.query('SELECT * FROM vendor;', [], function(err, result) {
         if (err) {
-            return next(err)
+            return next(err);
         }
-        res.json(result.rows)
-    })
+        res.json(result.rows);
+    });
 };
 
 /* GET new vendor */
@@ -117,15 +115,22 @@ module.exports.addVendor = function(req, res, next) {
 
 /* POST new vendor */
 module.exports.postVendor = function(req, res, next) {
-    const vendor = req.body
-    client.query('INSERT INTO vendor (type, name, email, phone, location, max_dis) VALUES ($1, $2, $3, $4, $5, $6);', ['V', vendor.name, vendor.email,
-        vendor.phone, vendor.location, vendor.max_dis], function(err, result) {
-            if (err) {
-                return next(err)
-            }
-            //res.send(200)
-            res.render('login')
-        })
+    const vendor = req.body;
+    client.query('SELECT * FROM vendor WHERE name=($1) AND phone=($2)', [vendor.name, vendor.phone], function(err, result) {
+        if (result.length == 0) {
+            client.query('INSERT INTO vendor (type, name, email, phone, location, max_dis) VALUES ($1, $2, $3, $4, $5, $6);', ['V', vendor.name, vendor.email,
+                vendor.phone, vendor.location, vendor.max_dis
+            ], function(err, result) {
+                if (err) {
+                    return next(err);
+                }
+                //res.send(200)
+                res.render('login');
+            });
+        } else {
+            res.render('addVendor', { err: "The food truck " + vendor.name + " with the phone number " + vendor.phone + " is already registered." });
+        }
+    });
 };
 /* GET new bank */
 module.exports.addBank = function(req, res, next) {
@@ -134,13 +139,19 @@ module.exports.addBank = function(req, res, next) {
 
 /* POST new bank */
 module.exports.postBank = function(req, res, next) {
-    const bank = req.body
-    client.query('INSERT INTO bank (type, name, email, phone, open_at, close_at, location) VALUES ($1, $2, $3, $4, $5, $6, $7);',
-        ['B', bank.name, bank.email, bank.phone, bank.open_at, bank.close_at, bank.location], function(err, result) {
-            if (err) {
-                return next(err)
-            }
-            //res.send(200)
-            res.render('login')
-        })
+    const bank = req.body;
+    client.query('SELECT * FROM bank WHERE name=($1) AND phone=($2)', [bank.name, bank.phone], function(err, result) {
+        if (result.length == 0) {
+            client.query('INSERT INTO bank (type, name, email, phone, open_at, close_at, location) VALUES ($1, $2, $3, $4, $5, $6, $7);', ['B', bank.name, bank.email, bank.phone, bank.open_at, bank.close_at, bank.location], function(err, result) {
+                if (err) {
+                    return next(err);
+                }
+                //res.send(200)
+                res.render('login');
+            });
+        } else {
+            res.render('addBank', { err: "The food bank " + bank.name + " with the phone number " + bank.phone + " is already registered." });
+        }
+
+    });
 };
