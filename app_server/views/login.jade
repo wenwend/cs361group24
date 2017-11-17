@@ -5,23 +5,31 @@ block content
     .alert.alert-danger.aler-dismissable.fade.show(role="alert") #{err}
       button.close(type="button" data-dismiss="alert" aria-label="close")
         span(aria-hidden="true") &times;
-  div(id="loginForm")
-    form(action="/postLogin", method="post")
-      fieldset(id="loginField")
-        legend Vendor Login
-        label Name
-        input(type="text", name="name")
-        br
-        input(type="submit", id="loginSubmit")
-
-  div(id="loginFormBank")
-    form(action="/postLoginBank", method="post")
-      fieldset(id="loginBankField")
-        legend Food Bank Login
-        label Name
-        input(type="text", name="name")
-        br
-        input(type="submit", id="loginBankSubmit")
+  .container(id="loginFormVendor")
+    legend Log in
+    .container(id="tabs")
+      ul.nav.nav-pills.nav-fill
+        li.nav-item
+          a.nav-link.active(href="#1" data-toggle="tab") Food Truck Login
+        li.nav-item
+          a.nav-link(href="#2" data-toggle="tab") Food Bank Login
+      .tab-content
+        .tab-pane.active(id="1")
+          form(action="/postLogin", method="post")
+            br
+            .form-row
+              .col
+                input.form-control(required type="text", name="name" id="vendor-name" placeholder="Food Truck Name")
+              .col
+                input.btn.btn-primary(type="submit", id="loginSubmit")
+        .tab-pane(id="2")
+          form(action="/postLoginBank", method="post")
+            br
+            .form-row
+              .col
+                input.form-control(required type="text", name="name" id="bank-name" placeholder="Food Bank Name")
+              .col
+                input.btn.btn-primary(type="submit", id="loginBankSubmit")
   
   
   
