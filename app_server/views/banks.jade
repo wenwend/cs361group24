@@ -10,10 +10,46 @@ block content
         for bank in banks
           .row
             h3 #{bank.name}
-          .row Opens: #{bank.open_at} Closes: #{bank.close_at}
           .row
-            .col-sm-3 Contact
+            .col-sm-3 Hours:
             .col-sm-9 
-              .row Email: #{bank.email}
-              .row Phone: #{bank.phone}
-          .row Location: #{bank.location}
+              .row Opens: #{bank.open_at}
+              .row Closes: #{bank.close_at}
+          .row
+            .col-sm-3 Contact:
+            .col-sm-9
+              .row
+                a.email Email: #{bank.email}
+              .row
+                a.phone Phone: #{bank.phone}
+          .row
+            .col-sm-3 Location:
+            .col-sm-9
+              a.location #{bank.location}
+  script.
+    document.addEventListener("DOMContentLoaded", function(event) {
+      linkEmail();
+      linkPhone();
+      linkLocation();
+    });
+
+    function linkEmail() {
+      $(".email").each(function() {
+        var email = $(this).text();
+        $(this).attr("href", "mailto:" + email);
+      })
+    }
+
+    function linkPhone() {
+      $(".phone").each(function() {
+        var phone = $(this).text();
+        $(this).attr("href", "tel:+1" + phone);
+      })
+    }
+
+    function linkLocation() {
+      $(".location").each(function() {
+        var location = $(this).text();
+        $(this).attr("href", "https://www.google.com/maps/search/?api=1&query=" + escape(location));
+      })
+    }
