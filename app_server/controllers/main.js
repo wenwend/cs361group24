@@ -117,7 +117,10 @@ module.exports.addVendor = function(req, res, next) {
 module.exports.postVendor = function(req, res, next) {
     const vendor = req.body;
     client.query('SELECT * FROM vendor WHERE name=($1) AND phone=($2)', [vendor.name, vendor.phone], function(err, result) {
-        if (result.length == 0) {
+        if (err) {
+            return next(err);
+        }
+        if (result.rows.length == 0) {
             client.query('INSERT INTO vendor (type, name, email, phone, location, max_dis) VALUES ($1, $2, $3, $4, $5, $6);', ['V', vendor.name, vendor.email,
                 vendor.phone, vendor.location, vendor.max_dis
             ], function(err, result) {
@@ -141,7 +144,10 @@ module.exports.addBank = function(req, res, next) {
 module.exports.postBank = function(req, res, next) {
     const bank = req.body;
     client.query('SELECT * FROM bank WHERE name=($1) AND phone=($2)', [bank.name, bank.phone], function(err, result) {
-        if (result.length == 0) {
+        if (err) {
+            return next(err);
+        }
+        if (result.rows.length == 0) {
             client.query('INSERT INTO bank (type, name, email, phone, open_at, close_at, location) VALUES ($1, $2, $3, $4, $5, $6, $7);', ['B', bank.name, bank.email, bank.phone, bank.open_at, bank.close_at, bank.location], function(err, result) {
                 if (err) {
                     return next(err);
