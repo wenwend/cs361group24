@@ -134,7 +134,7 @@ module.exports.banks = function(req, res, next) {
                 if (err) {
                     next(err);
                 }
-                res.json(result.rows);
+                render('banks', { banks: result.rows });
             });
         });
     } else {
