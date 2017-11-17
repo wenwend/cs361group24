@@ -1,10 +1,14 @@
 extends layout
 
 block content
-  h1 Welcome #{name}!
-  a(type='button', href='/addDonation') Add a Donation 
-  br
-  br
-  a(type='button', href='/donations') View Donations 
+  .container
+    h1 Welcome #{name}!
+    .row
+      .col-md-2
+        button.btn.btn-primary(type='button', href='/addDonation') Add a Donation
+      .col-md-2
+        button.btn.btn-primary(type='button', href='/donations') View Donations
+      .col-md-2
+        button.btn.btn-primary(type="button" href="/banks") View Nearby Banks
 
 
