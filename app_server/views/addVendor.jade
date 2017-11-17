@@ -2,25 +2,50 @@ extends layout
 
 block content
   .container
-    form(action="/postVendor", method="post")
+    form(action="/postVendor", method="post" id="add-vendor-form" novalidate)
       legend Food Truck Sign Up
       .form-group
         label(for="name") Name
-        input.form-control(required type="text", name="name" id="name" placeholder="Enter a name")
+        input.form-control(required type="text", name="name" id="name" placeholder="Enter a name" minlength="3")
+        .invalid-feedback Enter a name with 3 or more characters
       .form-group
-        label(for="email") Email 
+        label(for="email") Email
         input.form-control(required type="email", name="email" id="email" placeholder="Enter an email address")
+        .invalid-feedback Enter a valid email address
       .form-group
-        label(for="phone") Phone 
-        input.form-control(required type="tel", name="phone" id="phone" placeholder="Enter a phone number")
+        label(for="phone") Phone
+        input.form-control(required type="tel", name="phone" id="phone" placeholder="Enter a phone number"  pattern="(\\([0-9]{3}\\)|[0-9]{3})[ -]?[0-9]{3}[ -]?[0-9]{4}")
+        .invalid-feedback Enter a valid phone number
       .form-group
         label(for="max_dis") Search Radius
         input.form-control(required type="number", name="max_dis" id="max_dis" placeholder="Enter a maximum travel distance in miles")
+        .invalid-feedback Enter a valid number
       .form-group
-        label(for="location") Location 
+        label(for="location") Location
         input.form-control(required type="text", name="location" id="location" onFocus="geolocate()")
+        .invalid-feedback Enter a valid location
       input.btn.btn-primary(type="submit", id="sendNewVendor")
   script.
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+      addValidation();
+    });
+
+    function addValidation() {
+      var form = document.getElementById('add-vendor-form');
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        } else {
+          // Strip non numeric characters from the phone number
+          var phoneNum = $("#phone").val().replace(/\D/g,'');
+          $("#phone").val(phoneNum);
+        }
+        form.classList.add('was-validated');
+      }, false);
+    }
+
     var autocomplete;
     function initAutocomplete() {
       autocomplete = new google.maps.places.Autocomplete(document.getElementById("location"), {types:['geocode']});
@@ -42,8 +67,8 @@ block content
       }
     }
   script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUwO4rlM06EyXcLkhONF6B41ZYEZGv81Y&libraries=places&callback=initAutocomplete")
-  
-  
-  
-  
-  
+
+
+
+
+
