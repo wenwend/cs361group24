@@ -14,15 +14,34 @@ block content
         label(for="phone") Phone 
         input.form-control(required type="tel", name="phone" id="phone" placeholder="Enter a phone number")
       .form-group
-        label(for="location") Zip Code 
-        input.form-control(required type="text", name="location" id="location" placeholder="Enter a zip code")
-      .form-group
         label(for="max_dis") Search Radius
         input.form-control(required type="number", name="max_dis" id="max_dis" placeholder="Enter a maximum travel distance in miles")
+      .form-group
+        label(for="location") Location 
+        input.form-control(required type="text", name="location" id="location" onFocus="geolocate()")
       input.btn.btn-primary(type="submit", id="sendNewVendor")
-  
-  
-  
+  script.
+    var autocomplete;
+    function initAutocomplete() {
+      autocomplete = new google.maps.places.Autocomplete(document.getElementById("location"), {types:['geocode']});
+    }
+
+    function geolocate() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var geolocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          var circle = new google.maps.Circle({
+            center: geolocation,
+            radius: position.coords.accuracy
+          });
+          autocomplete.setBounds(circle.getBounds());
+        });
+      }
+    }
+  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUwO4rlM06EyXcLkhONF6B41ZYEZGv81Y&libraries=places&callback=initAutocomplete")
   
   
   
