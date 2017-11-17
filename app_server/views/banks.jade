@@ -4,6 +4,6 @@ block content
   .container
     h2 Food Banks in your Area
     legend Displaying banks within #{radius}m of #{vendor_location}
-  //- for bank in banks
-  //-   .row
-  //-     h2 bank.name
+    for bank in banks
+      .row
+        h2 bank.name
