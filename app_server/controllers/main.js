@@ -61,7 +61,7 @@ module.exports.postLoginBank = function(req, res, next) {
 /* GET mainMenu page */
 module.exports.mainMenu = function(req, res) {
     if (req.session.userId && req.session.userType == "V") {
-        res.render('mainMenu');
+        res.render('mainMenu', { name: req.session.userName });
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
@@ -70,7 +70,7 @@ module.exports.mainMenu = function(req, res) {
 /* GET mainMenuBank page */
 module.exports.mainMenuBank = function(req, res) {
     if (req.session.userId && req.session.userType == "B") {
-        res.render('mainMenuBank');
+        res.render('mainMenuBank', { name: req.session.userName });
     } else {
         res.render('login', { err: "You must be logged in as a food bank to access that page" });
     }
