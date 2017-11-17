@@ -18,8 +18,8 @@ block content
         .invalid-feedback Enter a valid phone number
       .form-group
         label(for="max_dis") Search Radius
-        input.form-control(required type="number", name="max_dis" id="max_dis" placeholder="Enter a maximum travel distance in miles")
-        .invalid-feedback Enter a valid number
+        input.form-control(required type="number", name="max_dis" id="max_dis" placeholder="Enter a maximum travel distance in miles" min="1")
+        .invalid-feedback Enter a valid number greater than 0
       .form-group
         label(for="location") Location
         input.form-control(required type="text", name="location" id="location" onFocus="geolocate()")
