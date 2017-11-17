@@ -31,6 +31,7 @@ module.exports.postLogin = function(req, res, next) {
         if (result.rows[0] !== undefined) {
             req.session.userId = result.rows[0].id;
             req.session.userName = result.rows[0].name;
+            req.session.userType = "V";
             res.render('mainMenu', { name: req.session.userName });
         } else {
             res.render('login', { err: "Food truck " + login.name + " not found." });
@@ -49,6 +50,7 @@ module.exports.postLoginBank = function(req, res, next) {
         if (result.rows[0] !== undefined) {
             req.session.userId = result.rows[0].id;
             req.session.userName = result.rows[0].name;
+            req.session.userType = "B";
             res.render('mainMenuBank', { name: req.session.userName });
         } else {
             res.render('login', { err: "Food bank " + login.name + " not found." });
@@ -58,44 +60,64 @@ module.exports.postLoginBank = function(req, res, next) {
 
 /* GET mainMenu page */
 module.exports.mainMenu = function(req, res) {
-    res.render('mainMenu');
+    if (req.session.userId && req.session.userType == "V") {
+        res.render('mainMenu');
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
 };
 
 /* GET mainMenuBank page */
 module.exports.mainMenuBank = function(req, res) {
-    res.render('mainMenuBank');
+    if (req.session.userId && req.session.userType == "B") {
+        res.render('mainMenuBank');
+    } else {
+        res.render('login', { err: "You must be logged in as a food bank to access that page" });
+    }
 };
 
 /* GET addDonation page */
 module.exports.addDonation = function(req, res) {
-    res.render('addDonation');
+    if (req.session.userId && req.session.userType == "V") {
+        res.render('addDonation');
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
 };
 
 /* POST new donation */
 module.exports.postDonation = function(req, res, next) {
-    const donation = req.body;
-    client.query('INSERT INTO donation (id, status, date) VALUES ($1, $2, $3);', [req.session.userId, donation.dStatus, donation.date], function(err, result) {
-        if (err) {
-            return next(err);
-        }
-        //res.send(200)
-        res.render('mainMenu');
-    });
+    if (req.session.userId && req.session.userType == "V") {
+        const donation = req.body;
+        client.query('INSERT INTO donation (id, status, date) VALUES ($1, $2, $3);', [req.session.userId, donation.dStatus, donation.date], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+            //res.send(200)
+            res.render('mainMenu');
+        });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
 };
 
 /* GET donations */
 module.exports.donations = function(req, res, next) {
-    client.query('SELECT * FROM donation WHERE id=($1);', [req.session.userId], function(err, result) {
-        if (err) {
-            return next(err);
-        }
-        // res.json(result.rows)
-        var donations = [];
-        for (var i = 0; i < result.rows.length; i++) {
-            donations[i] = 'Description: ' + result.rows[i].status + ' Date: ' + result.rows[i].date;
-        }
-        res.render('donations', { donations: donations });
-    });
+    if (req.session.userId && req.session.userType == "V") {
+        client.query('SELECT * FROM donation WHERE id=($1);', [req.session.userId], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+            // res.json(result.rows)
+            var donations = [];
+            for (var i = 0; i < result.rows.length; i++) {
+                donations[i] = 'Description: ' + result.rows[i].status + ' Date: ' + result.rows[i].date;
+            }
+            res.render('donations', { donations: donations });
+        });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
 };
 
 /* GET vendors */
