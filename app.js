@@ -19,6 +19,7 @@ var mainMenuBank = require('./app_server/routes/mainMenuBank');
 var addDonation = require('./app_server/routes/addDonation');
 var postDonation = require('./app_server/routes/postDonation');
 var donations = require('./app_server/routes/donations');
+var banks = require('./app_server/routes/banks');
 var addBank = require('./app_server/routes/addBank');
 var postBank = require('./app_server/routes/postBank');
 
@@ -36,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // session cookie
-app.use(session({ secret: 'keyboard car', cookie: {maxAge: 60000 }}));
+app.use(session({ secret: 'keyboard car', cookie: { maxAge: 60000 } }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -52,30 +53,30 @@ app.use('/mainMenuBank', mainMenuBank);
 app.use('/addDonation', addDonation);
 app.use('/postDonation', postDonation);
 app.use('/donations', donations);
+app.use('/banks', banks);
 app.use('/addBank', addBank);
 app.use('/postBank', postBank);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;
 
-app.listen(8080, function () {
+app.listen(8080, function() {
     console.log("Server running");
 });
-

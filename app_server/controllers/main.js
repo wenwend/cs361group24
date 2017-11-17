@@ -120,6 +120,20 @@ module.exports.donations = function(req, res, next) {
     }
 };
 
+/* GET nearby banks */
+module.exports.banks = function(req, res, next) {
+    if (req.session.userId && req.session.userType == "V") {
+        client.query('SELECT location, max_dis FROM vendor WHERE id=($1);', [req.session.userId], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+            res.json(result.rows);
+        });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
+};
+
 /* GET vendors */
 module.exports.vendors = function(req, res, next) {
     client.query('SELECT * FROM vendor;', [], function(err, result) {
