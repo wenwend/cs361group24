@@ -6,16 +6,16 @@ block content
     legend Displaying banks within #{radius}m of #{location}
     for bank in banks
       .row
-        .md-col-8 #{bank.name}
-        .md-col-4 Opens: #{bank.open_at}
+        .col-md-8 #{bank.name}
+        .col-md-4 Opens: #{bank.open_at}
       .row
-        .md-col-8
-        .md-col-4 Closes: #{bank.close_at}
+        .col-md-8
+        .col-md-4 Closes: #{bank.close_at}
       .row
-        .md-col-4 Contact
-        .md-col-8 Email: #{bank.email}
+        .col-md-4 Contact
+        .col-md-8 Email: #{bank.email}
       .row
-        .md-col-4
-        .md-col-8 Phone: #{bank.phone}
+        .col-md-4
+        .col-md-8 Phone: #{bank.phone}
       .row
-        .md-col-12 Location: #{bank.location}
+        .col-md-12 Location: #{bank.location}
