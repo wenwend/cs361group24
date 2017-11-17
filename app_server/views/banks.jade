@@ -5,15 +5,15 @@ block content
     h2 Food Banks in your Area
     legend Displaying banks within #{radius}m of #{location}
     .row
-      .col-xs-8
+      .col-xs-8 Map?
       .col-xs-4(id="bank-details")
         for bank in banks
           .row
             h3 #{bank.name}
           .row Opens: #{bank.open_at} Closes: #{bank.close_at}
           .row
-            .col-sm-1 Contact
-            .col-sm-3 
+            .col-sm-3 Contact
+            .col-sm-9 
               .row Email: #{bank.email}
               .row Phone: #{bank.phone}
           .row Location: #{bank.location}
