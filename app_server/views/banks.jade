@@ -4,18 +4,16 @@ block content
   .container
     h2 Food Banks in your Area
     legend Displaying banks within #{radius}m of #{location}
-    for bank in banks
-      .row
-        .col-md-8 #{bank.name}
-        .col-md-4 Opens: #{bank.open_at}
-      .row
-        .col-md-8
-        .col-md-4 Closes: #{bank.close_at}
-      .row
-        .col-md-4 Contact
-        .col-md-8 Email: #{bank.email}
-      .row
-        .col-md-4
-        .col-md-8 Phone: #{bank.phone}
-      .row
-        .col-md-12 Location: #{bank.location}
+    .row
+      .col-xs-8
+      .col-xs-4(id="bank-details")
+        for bank in banks
+          .row
+            h3 #{bank.name}
+          .row Opens: #{bank.open_at} Closes: #{bank.close_at}
+          .row
+            .col-sm-1 Contact
+            .col-sm-3 
+              .row Email: #{bank.email}
+              .row Phone: #{bank.phone}
+          .row Location: #{bank.location}
