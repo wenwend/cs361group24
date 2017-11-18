@@ -167,10 +167,15 @@ module.exports.banks = function(req, res, next) {
                                     (JSON.parse(results[i]))["rows"][0]["elements"][0]["distance"]["value"] / METERS_IN_MILE;
 
                                 if (milesToBank <= Math.abs(radius)) {
-                                    bresults.rows[i].distance_to = milesToBank;
+                                    bresults.rows[i].distance_to = milesToBank.toFixed(2);
                                     validBanks.push(bresults.rows[i]);
                                 }
                             }
+
+                            // Sort the banks based on distance
+                            validBanks.sort(function(a, b) {
+                                return a.distance_to - b.distance_to;
+                            })
 
                             // Render page with valid banks.
                             res.render('banks',

@@ -6,7 +6,7 @@ block content
     legend Displaying banks within #{radius}m of #{location}
     for bank in banks
       .row
-        h3 #{bank.name}
+        h3 #{bank.name} (#{bank.distance_to}m)
       .row
         .col-sm-2 Hours:
         .col-sm-10 
@@ -20,7 +20,7 @@ block content
           .row
             a.phone #{bank.phone}
       .row
-        .col-sm-2 #{bank.distance_to}m away:
+        .col-sm-2 Location:
         .col-sm-10
           a.location #{bank.location}
   script.
