@@ -174,6 +174,10 @@ module.exports.banks = function(req, res, next) {
                                     bresults.rows[i].open_at = open.format("h:mmA");
                                     bresults.rows[i].close_at = close.format("h:mmA");
 
+                                    // Format the phone number
+                                    var phone = bresults.row[i].phone;
+                                    bresults.row[i].phone = phone.slice(0, 3) + "-" + phone.slice(3, 6) + "-" + phone.slice(6);
+
                                     bresults.rows[i].distance_to = milesToBank.toFixed(2);
                                     validBanks.push(bresults.rows[i]);
                                 }

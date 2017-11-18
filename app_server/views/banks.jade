@@ -10,8 +10,8 @@ block content
       .row
         .col-sm-2 Hours:
         .col-sm-10 
-          .row  #{bank.open_at}
-          .row  #{bank.close_at}
+          .row Opens at #{bank.open_at}
+          .row Closes at #{bank.close_at}
       .row
         .col-sm-2 Contact:
         .col-sm-10
@@ -40,7 +40,7 @@ block content
     function linkPhone() {
       $(".phone").each(function() {
         var phone = $(this).text();
-        $(this).attr("href", "tel:+1" + phone);
+        $(this).attr("href", "tel:+1-" + phone);
       })
     }
 
