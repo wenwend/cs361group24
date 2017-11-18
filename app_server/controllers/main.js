@@ -128,59 +128,59 @@ module.exports.donations = function(req, res, next) {
 module.exports.banks = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         client.query(
-	    'SELECT location, max_dis FROM vendor WHERE id=($1);',
-	    [req.session.userId],
-	    function(verr, vresult) {
-		if (verr)
+            'SELECT location, max_dis FROM vendor WHERE id=($1);',
+            [req.session.userId],
+            function(verr, vresult) {
+                if (verr)
                     return next(verr);
 
-		var radius = vresult.rows[0].max_dis;
+                var radius = vresult.rows[0].max_dis;
                 var vendor_location = vresult.rows[0].location;
 
-		client.query(
-		    'SELECT name, email, phone, location, open_at, close_at FROM bank WHERE location IS NOT NULL',
-		    function(err, bresults) {
-			if (err)
-			    return next(err);
+                client.query(
+                    'SELECT name, email, phone, location, open_at, close_at FROM bank WHERE location IS NOT NULL',
+                    function(err, bresults) {
+                        if (err)
+                            return next(err);
 
-			// Create request promises for each result as
-			// it queries for the distance from vendor to
-			// bank.
-			var resultPromises = new Array();
-			for (var bank of bresults.rows)
-			{
-			    var url = 
-				    "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial"
-				+"&origins="+bank.location
-				+"&destinations="+vendor_location
-				+"&key=AIzaSyBkala2S1ZuGd3Tz8M3i6NT0_vAb07WU6U";
-			    resultPromises.push(rp.get(url));
-			}
+                        // Create request promises for each result as
+                        // it queries for the distance from vendor to
+                        // bank.
+                        var resultPromises = new Array();
+                        for (var bank of bresults.rows) {
+                            var url =
+                                "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial"
+                                + "&origins=" + bank.location
+                                + "&destinations=" + vendor_location
+                                + "&key=AIzaSyBkala2S1ZuGd3Tz8M3i6NT0_vAb07WU6U";
+                            resultPromises.push(rp.get(url));
+                        }
 
-			// When all request promises finish...
-			Promise.all(resultPromises).then(function (results) {
-			    // Filter out banks from results whose
-			    // distance is within vendor defined
-			    // radius.
-			    var validBanks = new Array();
-			    for (var i = 0; i < results.length; ++i)
-			    {
-				var milesToBank =
-					(JSON.parse(results[i]))["rows"][0]["elements"][0]["distance"]["value"] / METERS_IN_MILE;
+                        // When all request promises finish...
+                        Promise.all(resultPromises).then(function(results) {
+                            // Filter out banks from results whose
+                            // distance is within vendor defined
+                            // radius.
+                            var validBanks = new Array();
+                            for (var i = 0; i < results.length; ++i) {
+                                var milesToBank =
+                                    (JSON.parse(results[i]))["rows"][0]["elements"][0]["distance"]["value"] / METERS_IN_MILE;
 
-				if (milesToBank <= Math.abs(radius))
-				    validBanks.push(bresults.rows[i]);
-			    }
+                                if (milesToBank <= Math.abs(radius)) {
+                                    bresults.rows[i].distance_to = milesToBank;
+                                    validBanks.push(bresults.rows[i]);
+                                }
+                            }
 
-			    // Render page with valid banks.
-			    res.render('banks',
-		    		       {
-		    			   banks: validBanks,
-		    			   radius: radius,
-		    			   location: vendor_location
-		    		       });
-			});
-		    });
+                            // Render page with valid banks.
+                            res.render('banks',
+                                {
+                                    banks: validBanks,
+                                    radius: radius,
+                                    location: vendor_location
+                                });
+                        });
+                    });
             });
     }
     else {
