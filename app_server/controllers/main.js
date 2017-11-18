@@ -1,3 +1,8 @@
+var METERS_IN_MILE = 1609.344;
+
+var request = require('request');
+var rp = require('request-promise-native');
+
 //connect to database
 const { Client } = require('pg');
 var client = new Client({
@@ -24,10 +29,9 @@ module.exports.login = function(req, res) {
 module.exports.postLogin = function(req, res, next) {
     const login = req.body;
     client.query('SELECT id, name FROM vendor WHERE name=($1);', [login.name], function(err, result) {
-        if (err) {
+        if (err)
             return next(err);
-        }
-        //res.send(200)
+
         if (result.rows[0] !== undefined) {
             req.session.userId = result.rows[0].id;
             req.session.userName = result.rows[0].name;
@@ -123,21 +127,63 @@ module.exports.donations = function(req, res, next) {
 /* GET nearby banks */
 module.exports.banks = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
-        client.query('SELECT location, max_dis FROM vendor WHERE id=($1);', [req.session.userId], function(verr, vresult) {
-            if (verr) {
-                return next(verr);
-            }
-            var radius = vresult.rows[0].max_dis,
-                vendor_location = vresult.rows[0].location;
+        client.query(
+	    'SELECT location, max_dis FROM vendor WHERE id=($1);',
+	    [req.session.userId],
+	    function(verr, vresult) {
+		if (verr)
+                    return next(verr);
 
-            client.query('SELECT name, email, phone, location, open_at, close_at FROM bank WHERE location IS NOT NULL', function(err, result) {
-                if (err) {
-                    next(err);
-                }
-                res.render('banks', { banks: result.rows, radius: radius, location: vendor_location });
+		var radius = vresult.rows[0].max_dis;
+                var vendor_location = vresult.rows[0].location;
+
+		client.query(
+		    'SELECT name, email, phone, location, open_at, close_at FROM bank WHERE location IS NOT NULL',
+		    function(err, bresults) {
+			if (err)
+			    return next(err);
+
+			// Create request promises for each result as
+			// it queries for the distance from vendor to
+			// bank.
+			var resultPromises = new Array();
+			for (var bank of bresults.rows)
+			{
+			    var url = 
+				    "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial"
+				+"&origins="+bank.location
+				+"&destinations="+vendor_location
+				+"&key=AIzaSyBkala2S1ZuGd3Tz8M3i6NT0_vAb07WU6U";
+			    resultPromises.push(rp.get(url));
+			}
+
+			// When all request promises finish...
+			Promise.all(resultPromises).then(function (results) {
+			    // Filter out banks from results whose
+			    // distance is within vendor defined
+			    // radius.
+			    var validBanks = new Array();
+			    for (var i = 0; i < results.length; ++i)
+			    {
+				var milesToBank =
+					(JSON.parse(results[i]))["rows"][0]["elements"][0]["distance"]["value"] / METERS_IN_MILE;
+
+				if (milesToBank <= Math.abs(radius))
+				    validBanks.push(bresults.rows[i]);
+			    }
+
+			    // Render page with valid banks.
+			    res.render('banks',
+		    		       {
+		    			   banks: validBanks,
+		    			   radius: radius,
+		    			   location: vendor_location
+		    		       });
+			});
+		    });
             });
-        });
-    } else {
+    }
+    else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
 };
