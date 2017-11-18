@@ -2,6 +2,7 @@ var METERS_IN_MILE = 1609.344;
 
 var request = require('request');
 var rp = require('request-promise-native');
+var moment = require('moment');
 
 //connect to database
 const { Client } = require('pg');
@@ -167,6 +168,12 @@ module.exports.banks = function(req, res, next) {
                                     (JSON.parse(results[i]))["rows"][0]["elements"][0]["distance"]["value"] / METERS_IN_MILE;
 
                                 if (milesToBank <= Math.abs(radius)) {
+                                    // Format the open and close times
+                                    var open = moment(bresults.rows[i].open_at, "H:m:s"),
+                                        close = moment(bresults.rows[i].close_at, "H:m:s");
+                                    bresults.rows[i].open_at = open.format("h:mmA");
+                                    bresults.rows[i].close_at = close.format("h:mmA");
+
                                     bresults.rows[i].distance_to = milesToBank.toFixed(2);
                                     validBanks.push(bresults.rows[i]);
                                 }
