@@ -3,26 +3,30 @@ extends layout
 block content
   .container
     h2 Food Banks in your Area
-    legend Displaying banks within #{radius}m of #{location}
-    for bank in banks
-      .row
-        h3 #{bank.name} (#{bank.distance_to}m)
-      .row
-        .col-sm-2 Hours:
-        .col-sm-10 
-          .row Opens at #{bank.open_at}
-          .row Closes at #{bank.close_at}
-      .row
-        .col-sm-2 Contact:
-        .col-sm-10
-          .row
-            a.email #{bank.email}
-          .row
-            a.phone #{bank.phone}
-      .row
-        .col-sm-2 Location:
-        .col-sm-10
-          a.location #{bank.location}
+    
+    table.table-responsive.table-hover
+      captain 
+        p-lead Displaying banks within #{radius}m of #{location}
+      thead-light
+        tr.table-primary
+          th.col Name
+          th.col Distance
+          th.col Open Hour
+          th.col Close Hour
+          th.col Email
+          th.col Phone
+          th.col Location
+
+        
+        for bank in banks
+          tr
+            td.col #{bank.name} 
+            td.col #{bank.distance_to}m
+            td.col #{bank.open_at}
+            td.col #{bank.close_at}
+            td.col #{bank.email}
+            td.col #{bank.phone}
+            td.col #{bank.location}
   script.
     document.addEventListener("DOMContentLoaded", function(event) {
       linkEmail();

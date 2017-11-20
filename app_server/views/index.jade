@@ -1,25 +1,39 @@
 extends layout
 block content
-	.jumbotron.jumbotro-fluid
-		.container
-					h1.display-3	Food Trucks Fight Hunger 
-					p.lead Welcome to #{title}, from here we will make a change. Every food vendor can donate the food, and help fight against hunger.
-					p
-						a.btn.btn-primary.btn-lg(href='/login', role='button') Login
-	hr.my-4
-	.row
-		.col-sm-6
-			.card.bg-light.mb-3
-				.card-body
-					h4	New Vendor? Please Register for an Account.
-					p
-						a.btn.btn-primary(href='/addVendor',	role='button') Register >>
-		.col-sm-6
-			.card.bg-light.mb-3
-				.card-body
-					h4	New Shelter? Please Register for an Account.
-					p
-						a.btn.btn-primary(href='/addBank',	role='button') Register >>
+	.container
+		.header.clearfix
+			nav 
+				ul.nav.nav-pills.float-right
+					li.nav-item(role='reesentation')
+						a.nav-link.active(href='/index') Home
+					li.nav-item(role='presentation')
+						a.nav-link(href='/login') Login
+					li.nav-item(role='presentation')
+						a.nav-link(href='/banks') Nearby Banks
+					li.nav-item(role='presentation')
+						a.nav-link(href='https://github.com/anberns/cs361group24') Contact
+			h3.text-muted Food Trucks Fight Hunger
+			hr.my-4
+
+		.jumbotron.jumbotro-fluid
+			h1.display-3	Food Trucks Fight Hunger 
+			p.lead Welcome to #{title}, from here we will make a change. Every food vendor can donate the food, and help fight against hunger.
+			p
+				a.btn.btn-primary.btn-lg(href='/login', role='button') Login
+		hr.my-4
+		.row
+			.col-sm-6
+				.card.bg-light.mb-3
+					.card-body
+						h4	New Vendor? Please Register for an Account.
+						p
+							a.btn.btn-primary(href='/addVendor',	role='button') Register >>
+			.col-sm-6
+				.card.bg-light.mb-3
+					.card-body
+						h4	New Shelter? Please Register for an Account.
+						p
+							a.btn.btn-primary(href='/addBank',	role='button') Register >>
 		//site footer
 		hr.my-4
 		footer.footer
