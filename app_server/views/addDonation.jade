@@ -1,15 +1,39 @@
 extends layout
 
 block content
-  div(id="newDonationForm")
-    form(action="/postDonation", method="post")
+  //-div(id="newDonationForm")
+  .container
+    form(action="/postDonation", method="post" id="add-donation-form")
       fieldset(id="addD")
         legend What Can You Donate?
-        label Description
-        input(type="text", name="dStatus")
+        .form-group
+        label(for="dStatus") When do you need to donate by? 
+        input.form-control(required type="text", name="dStatus" id="dStatus")
+        .form-group
+        label(for="date") When do you need to donate by? 
+        input.form-control(required type="datetime-local", name="date" id="date")
         br
-        label When do you need to donate by? 
-        input(type="datetime-local", name="date")
-        br
-        input(type="submit", id="sendNewDonation")
- 
+        input.btn.btn-primary(type="submit", id="sendNewDonation")
+
+
+  script.
+    document.addEventListener("DOMContentLoaded", function(event) {
+      addValidation();
+    });
+
+    function addValidation() {
+      var form = document.getElementById('add-donation-form');
+      form.addEventListener('submit', function(event) {
+        if (new Date(document.getElementById('date').value) < Date.now()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }, false);
+    }
+
+
+
+
+
+
+
