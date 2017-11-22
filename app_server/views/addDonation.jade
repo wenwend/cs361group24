@@ -7,7 +7,7 @@ block content
       fieldset(id="addD")
         legend What Can You Donate?
         .form-group
-        label(for="dStatus") When do you need to donate by? 
+        label(for="dStatus") Description 
         input.form-control(required type="text", name="dStatus" id="dStatus")
         .form-group
         label(for="date") When do you need to donate by? 
@@ -27,6 +27,9 @@ block content
         if (new Date(document.getElementById('date').value) < Date.now()) {
           event.preventDefault();
           event.stopPropagation();
+          alert('That date has already passed!');
+        } else {
+                alert("Thanks! We'll let local food banks know what you've got.");
         }
       }, false);
     }
