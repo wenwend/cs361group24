@@ -94,7 +94,7 @@ module.exports.addDonation = function(req, res) {
 module.exports.postDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         const donation = req.body;
-        client.query('INSERT INTO donation (status, date) VALUES ($1, $2);', [donation.dStatus, donation.date], function(err, result) {
+        client.query('INSERT INTO donation (status, date, vendor_id) VALUES ($1, $2, $3);', [donation.dStatus, donation.date, req.session.userId], function(err, result) {
             if (err) {
                 return next(err);
             }

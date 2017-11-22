@@ -5,11 +5,11 @@ block content
     form(action="/postDonation", method="post")
       fieldset(id="addD")
         legend What Can You Donate?
-        label Status
+        label Description
         input(type="text", name="dStatus")
         br
-        label Date 
-        input(type="date", name="date")
+        label When do you need to donate by? 
+        input(type="datetime-local", name="date")
         br
         input(type="submit", id="sendNewDonation")
  
