@@ -116,9 +116,27 @@ module.exports.donations = function(req, res, next) {
             // res.json(result.rows)
             var donations = [];
             for (var i = 0; i < result.rows.length; i++) {
-                donations[i] =  {description: result.rows[i].status, date: result.rows[i].date};
+                donations[i] =  {description: result.rows[i].status, date: result.rows[i].date, id: result.rows[i].id};
             }
             res.render('donations', { name: req.session.userName, donations: donations});
+        });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
+};
+
+/* GET donation details */
+module.exports.donationDetails = function(req, res, next) {
+    if (req.session.userId && req.session.userType == "V" && req.query.id) {
+        client.query('SELECT * FROM donation WHERE id=($1);', [req.query.id], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+             //res.json(result.rows);
+             
+            var details =  {id: result.rows[0].id,description: result.rows[0].status, date: result.rows[0].date};
+            
+            res.render('donationDetails', {details});
         });
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
