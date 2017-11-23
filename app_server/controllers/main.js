@@ -109,16 +109,16 @@ module.exports.postDonation = function(req, res, next) {
 /* GET donations */
 module.exports.donations = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
-        client.query('SELECT * FROM donation WHERE id=($1);', [req.session.userId], function(err, result) {
+        client.query('SELECT * FROM donation WHERE vendor_id=($1);', [req.session.userId], function(err, result) {
             if (err) {
                 return next(err);
             }
             // res.json(result.rows)
             var donations = [];
             for (var i = 0; i < result.rows.length; i++) {
-                donations[i] = 'Description: ' + result.rows[i].status + ' Date: ' + result.rows[i].date;
+                donations[i] =  {description: result.rows[i].status, date: result.rows[i].date};
             }
-            res.render('donations', { donations: donations });
+            res.render('donations', { name: req.session.userName, donations: donations});
         });
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
