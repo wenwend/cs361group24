@@ -3,9 +3,9 @@ extends layout
 block content
   .container
     h2 Food Banks in your Area
-    
+
     table.table-responsive.table-hover
-      captain 
+      captain
         p-lead Displaying banks within #{radius}m of #{location}
       thead-light
         tr.table-primary
@@ -17,16 +17,17 @@ block content
           th.col Phone
           th.col Location
 
-        
+
+
         for bank in banks
           tr
-            td.col #{bank.name} 
+            td.col #{bank.name}
             td.col #{bank.distance_to}m
             td.col #{bank.open_at}
             td.col #{bank.close_at}
-            td.col #{bank.email}
-            td.col #{bank.phone}
-            td.col #{bank.location}
+            td.col.email #{bank.email}
+            td.col.phone #{bank.phone}
+            td.col.location #{bank.location}
   script.
     document.addEventListener("DOMContentLoaded", function(event) {
       linkEmail();
