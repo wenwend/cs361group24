@@ -67,7 +67,7 @@ block content
       $(".donate").each(function() {
         var bankId = $(this).attr("id");
         $(this).click(bankId, function(event) {
-          console.log(event.data.val());
+          console.log(event.data);
           $.get("/getDonatable", function(data) {
             console.log(data);
           })
