@@ -82,16 +82,16 @@ module.exports.mainMenuBank = function(req, res) {
 };
 
 /* GET addDonation page */
-module.exports.addDonation = function(req, res) {
+module.exports.addDonatable = function(req, res) {
     if (req.session.userId && req.session.userType == "V") {
-        res.render('addDonation');
+        res.render('addDonatable');
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
 };
 
 /* POST new donation */
-module.exports.postDonation = function(req, res, next) {
+module.exports.postDonatable = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         const donation = req.body;
         client.query('INSERT INTO donation (status, date, vendor_id) VALUES ($1, $2, $3);', [donation.dStatus, donation.date, req.session.userId], function(err, result) {
@@ -116,9 +116,9 @@ module.exports.donations = function(req, res, next) {
             // res.json(result.rows)
             var donations = [];
             for (var i = 0; i < result.rows.length; i++) {
-                donations[i] =  {description: result.rows[i].status, date: result.rows[i].date, id: result.rows[i].id};
+                donations[i] = { description: result.rows[i].status, date: result.rows[i].date, id: result.rows[i].id };
             }
-            res.render('donations', { name: req.session.userName, donations: donations});
+            res.render('donations', { name: req.session.userName, donations: donations });
         });
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
@@ -132,11 +132,11 @@ module.exports.donationDetails = function(req, res, next) {
             if (err) {
                 return next(err);
             }
-             //res.json(result.rows);
-             
-            var details =  {id: result.rows[0].id,description: result.rows[0].status, date: result.rows[0].date};
-            
-            res.render('donationDetails', {details});
+            //res.json(result.rows);
+
+            var details = { id: result.rows[0].id, description: result.rows[0].status, date: result.rows[0].date };
+
+            res.render('donationDetails', { details });
         });
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
@@ -147,8 +147,7 @@ module.exports.donationDetails = function(req, res, next) {
 module.exports.banks = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         client.query(
-            'SELECT location, max_dis FROM vendor WHERE id=($1);',
-            [req.session.userId],
+            'SELECT location, max_dis FROM vendor WHERE id=($1);', [req.session.userId],
             function(verr, vresult) {
                 if (verr)
                     return next(verr);
@@ -157,7 +156,7 @@ module.exports.banks = function(req, res, next) {
                 var vendor_location = vresult.rows[0].location;
 
                 client.query(
-                    'SELECT name, email, phone, location, open_at, close_at FROM bank WHERE location IS NOT NULL',
+                    'SELECT id, name, email, phone, location, open_at, close_at FROM bank WHERE location IS NOT NULL',
                     function(err, bresults) {
                         if (err)
                             return next(err);
@@ -168,10 +167,10 @@ module.exports.banks = function(req, res, next) {
                         var resultPromises = new Array();
                         for (var bank of bresults.rows) {
                             var url =
-                                "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial"
-                                + "&origins=" + bank.location
-                                + "&destinations=" + vendor_location
-                                + "&key=AIzaSyBkala2S1ZuGd3Tz8M3i6NT0_vAb07WU6U";
+                                "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial" +
+                                "&origins=" + bank.location +
+                                "&destinations=" + vendor_location +
+                                "&key=AIzaSyBkala2S1ZuGd3Tz8M3i6NT0_vAb07WU6U";
                             resultPromises.push(rp.get(url));
                         }
 
@@ -204,20 +203,18 @@ module.exports.banks = function(req, res, next) {
                             // Sort the banks based on distance
                             validBanks.sort(function(a, b) {
                                 return a.distance_to - b.distance_to;
-                            })
+                            });
 
                             // Render page with valid banks.
-                            res.render('banks',
-                                {
-                                    banks: validBanks,
-                                    radius: radius,
-                                    location: vendor_location
-                                });
+                            res.render('banks', {
+                                banks: validBanks,
+                                radius: radius,
+                                location: vendor_location
+                            });
                         });
                     });
             });
-    }
-    else {
+    } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
 };

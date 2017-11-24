@@ -3,14 +3,14 @@ extends layout
 block content
   //-div(id="newDonationForm")
   .container
-    form(action="/postDonation", method="post" id="add-donation-form")
+    form(action="/postDonatable", method="post" id="add-donation-form")
       fieldset(id="addD")
         legend What Can You Donate?
         .form-group
-        label(for="dStatus") Description 
+        label(for="dStatus") Description
         input.form-control(required type="text", name="dStatus" id="dStatus")
         .form-group
-        label(for="date") When do you need to donate by? 
+        label(for="date") When do you need to donate by?
         input.form-control(required type="datetime-local", name="date" id="date")
         br
         input.btn.btn-primary(type="submit", id="sendNewDonation")
