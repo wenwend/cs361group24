@@ -157,6 +157,22 @@ module.exports.donationDetails = function(req, res, next) {
     }
 };
 
+module.exports.postDonation = function(req, res, next) {
+    if (req.session.userId && req.session.userType == "V") {
+        // var donation = req.body;
+        // client.query('INSERT INTO completedDonation (vendor_id, bank_id, food, date_offered) VALUES($!, $2, $3, $4);',
+        //         [req.session.userId, donation.bankId, donation.donations, Date.now()], function(err, result) {
+        //     if (err) {
+        //         return next(err);
+        //     }
+
+        res.send(req.body);
+        // });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
+};
+
 /* GET nearby banks */
 module.exports.banks = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {

@@ -84,7 +84,7 @@ block content
     function addDonatableFood() {
       $.get("/getDonatable", function(data) {
         data.forEach(function(food) {
-          var newCheckbox = "<div class='form-check'><label class='form-check-label'><input class='form-check-input' type='checkbox'>" + food.status + "</label></div>";
+          var newCheckbox = "<div class='form-check'><label class='form-check-label'><input class='form-check-input' type='checkbox' name='" + food.status + "'>" + food.status + "</label></div>";
           $("#donateForm").append($(newCheckbox));
         })
       });
@@ -103,6 +103,11 @@ block content
     function submitDonation() {
       var foodToDonate = [];
       $("input:checked").each(function() {
-        console.log($(this).html());
-      })
+        foodToDonate.push($(this).attr("name"));
+      });
+      console.log(foodToDonate);
+      $.post("/postDonation", { 'donations[]': foodToDonate, bankId: bankId }, function(data) {
+        alert("Sent donation offer to bank. Awaiting confirmation");
+        console.log(data);
+      });
     }
