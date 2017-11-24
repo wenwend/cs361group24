@@ -37,16 +37,17 @@ block content
 
     .modal.fade(id="donateModal" tabindex="-1" role="dialog" aria-labelledby="donateModalLabel" aria-hidden="true")
       .modal-dialog
-        .modal-conetnt
+        .modal-content
           .modal-header
             h5.modal-title Donate Food
             button.close(type="button" data-dismiss="modal" aria-label="Close")
               span(aria-hidden="true")&times;
           .modal-body
             form(id="donateForm")
+              h4 Select food to donate:
           .modal-footer
-            button.btn.btn-secondary(type="button" data-dismiss="modal") Close
-            button.btn.btn-primary(type="button" onclick="submitDonation")
+            button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+            button.btn.btn-primary(type="button" onclick="submitDonation") Donate
 
   script.
     var bankId = -1;
@@ -56,6 +57,7 @@ block content
       linkPhone();
       linkLocation();
       linkDonateButtons();
+      addDonatableFood();
     });
 
     function linkEmail() {
@@ -79,17 +81,20 @@ block content
       })
     }
 
+    function addDonatableFood() {
+      $.get("/getDonatable", function(data) {
+        data.forEach(function(food) {
+          var newCheckbox = "<div class='form-check'><label class='form-check-label'><input class='form-check-input' type='checkbox'>" + food.status + "</label></div>";
+          $("#donateForm").append($(newCheckbox));
+        })
+      });
+    }
+
     function linkDonateButtons() {
       $(".donate").each(function() {
         var id = $(this).attr("id");
         $(this).click(id, function(event) {
           bankId = event.data;
-          $.get("/getDonatable", function(data) {
-            data.forEach(function(food) {
-              var newCheckbox = "<div class='form-check'><label class='form-check-label'><input class='form-check-input' type='checkbox'>" + food.name + "</label></div>";
-              $("#donateForm").append($(newCheckbox));
-            })
-          });
           $("#donateModal").modal("show");
         });
       });
