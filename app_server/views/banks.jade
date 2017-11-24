@@ -16,6 +16,7 @@ block content
           th.col Email
           th.col Phone
           th.col Location
+          th.col Donate
 
 
 
@@ -31,11 +32,14 @@ block content
               a.phone #{bank.phone}
             td.col
               a.location #{bank.location}
+            td.col
+              a.btn.btn-primary.donate(id="#{bank.id}") Donate
   script.
     document.addEventListener("DOMContentLoaded", function(event) {
       linkEmail();
       linkPhone();
       linkLocation();
+      linkDonateButtons();
     });
 
     function linkEmail() {
@@ -57,4 +61,16 @@ block content
         var location = $(this).text();
         $(this).attr("href", "https://www.google.com/maps/search/?api=1&query=" + escape(location));
       })
+    }
+
+    function linkDonateButtons() {
+      $(".donation").each(function() {
+        var bankId = $(this).attr("id");
+        $(this).click(bankId, function(event) {
+          console.log(event.data.val());
+          $.get("/getDonatable", function(data) {
+            console.log(data);
+          })
+        });
+      });
     }

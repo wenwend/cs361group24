@@ -106,6 +106,20 @@ module.exports.postDonatable = function(req, res, next) {
     }
 };
 
+/* GET donatable food */
+module.exports.getDonatable = function(req, res, next) {
+    if (req.session.userId && req.session.userType == "V") {
+        client.query('SELECT * FROM donation WHERE vendor_id=($1);', [req.session.userId], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+            res.json(result.rows);
+        });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
+};
+
 /* GET donations */
 module.exports.donations = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
