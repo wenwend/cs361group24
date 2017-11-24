@@ -25,9 +25,12 @@ block content
             td.col #{bank.distance_to}m
             td.col #{bank.open_at}
             td.col #{bank.close_at}
-            td.col.email #{bank.email}
-            td.col.phone #{bank.phone}
-            td.col.location #{bank.location}
+            td.col
+              a.email #{bank.email}
+            td.col
+              a.phone #{bank.phone}
+            td.col
+              a.location #{bank.location}
   script.
     document.addEventListener("DOMContentLoaded", function(event) {
       linkEmail();
