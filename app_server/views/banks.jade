@@ -33,7 +33,7 @@ block content
             td.col
               a.location #{bank.location}
             td.col
-              a.btn.btn-primary.donate(id="#{bank.id}") Donate
+              button.btn.btn-primary.donate(id="#{bank.id}") Donate
   script.
     document.addEventListener("DOMContentLoaded", function(event) {
       linkEmail();
@@ -64,7 +64,7 @@ block content
     }
 
     function linkDonateButtons() {
-      $(".donation").each(function() {
+      $(".donate").each(function() {
         var bankId = $(this).attr("id");
         $(this).click(bankId, function(event) {
           console.log(event.data.val());
