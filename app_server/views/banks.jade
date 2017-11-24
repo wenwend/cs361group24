@@ -39,12 +39,12 @@ block content
       .modal-dialog
         .modal-content
           .modal-header
-            h5.modal-title Donate Food
+            h4.modal-title Donate Food
             button.close(type="button" data-dismiss="modal" aria-label="Close")
               span(aria-hidden="true")&times;
           .modal-body
             form(id="donateForm")
-              h4 Select food to donate:
+              h5 Select food to donate:
           .modal-footer
             button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
             button.btn.btn-primary(type="button" onclick="submitDonation()") Donate
@@ -106,6 +106,7 @@ block content
         foodToDonate.push($(this).attr("name"));
       });
       $.post("/postDonation", { 'donations[]': foodToDonate, bankId: bankId }, function(data) {
+        $("#donateModal").modal("hide");
         alert("Sent donation offer to bank. Awaiting confirmation");
         console.log(data);
       });
