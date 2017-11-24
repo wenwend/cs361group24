@@ -58,7 +58,7 @@ app.use('/postDonatable', postDonatable);
 app.use('/getDonatable', getDonatable);
 app.use('/donations', donations);
 app.use('/donationDetails', donationDetails);
-spp.use('/postDonation', postDonation);
+app.use('/postDonation', postDonation);
 app.use('/banks', banks);
 app.use('/addBank', addBank);
 app.use('/postBank', postBank);
