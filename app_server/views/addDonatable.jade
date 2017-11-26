@@ -11,7 +11,9 @@ block content
         input.form-control(required type="text", name="dStatus" id="dStatus")
         .form-group
         label(for="date") When do you need to donate by?
-        input.form-control(required type="datetime-local", name="date" id="date")
+        input.form-control(required type="date", name="date" id="date")
+        .form-group
+        input.form-control(required type="time", name="time" id="time")
         br
         input.btn.btn-primary(type="submit", id="sendNewDonation")
 
@@ -25,7 +27,7 @@ block content
     function addValidation() {
       var form = document.getElementById('add-donation-form');
       form.addEventListener('submit', function(event) {
-        if (new Date(document.getElementById('date').value) < Date.now()) {
+        if (new Date(document.getElementById('date').value + ' ' + document.getElementById('time').value) < Date.now()) {
           event.preventDefault();
           event.stopPropagation();
           alert('That date has already passed!');
