@@ -212,22 +212,24 @@ module.exports.banks = function(req, res, next) {
                             // radius.
                             var validBanks = new Array();
                             for (var i = 0; i < results.length; ++i) {
-                                var milesToBank =
-                                    (JSON.parse(results[i]))["rows"][0]["elements"][0]["distance"]["value"] / METERS_IN_MILE;
+                                if ((JSON.parse(results[i]))["rows"][0]["elements"][0]["status"] == "OK") {
+                                    var milesToBank =
+                                        (JSON.parse(results[i]))["rows"][0]["elements"][0]["distance"]["value"] / METERS_IN_MILE;
 
-                                if (milesToBank <= Math.abs(radius)) {
-                                    // Format the open and close times
-                                    var open = moment(bresults.rows[i].open_at, "H:m:s"),
-                                        close = moment(bresults.rows[i].close_at, "H:m:s");
-                                    bresults.rows[i].open_at = open.format("h:mmA");
-                                    bresults.rows[i].close_at = close.format("h:mmA");
+                                    if (milesToBank <= Math.abs(radius)) {
+                                        // Format the open and close times
+                                        var open = moment(bresults.rows[i].open_at, "H:m:s"),
+                                            close = moment(bresults.rows[i].close_at, "H:m:s");
+                                        bresults.rows[i].open_at = open.format("h:mmA");
+                                        bresults.rows[i].close_at = close.format("h:mmA");
 
-                                    // Format the phone number
-                                    var phone = bresults.rows[i].phone;
-                                    bresults.rows[i].phone = phone.slice(0, 3) + "-" + phone.slice(3, 6) + "-" + phone.slice(6);
+                                        // Format the phone number
+                                        var phone = bresults.rows[i].phone;
+                                        bresults.rows[i].phone = phone.slice(0, 3) + "-" + phone.slice(3, 6) + "-" + phone.slice(6);
 
-                                    bresults.rows[i].distance_to = milesToBank.toFixed(2);
-                                    validBanks.push(bresults.rows[i]);
+                                        bresults.rows[i].distance_to = milesToBank.toFixed(2);
+                                        validBanks.push(bresults.rows[i]);
+                                    }
                                 }
                             }
 
