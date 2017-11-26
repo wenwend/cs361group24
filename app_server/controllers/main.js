@@ -201,6 +201,7 @@ module.exports.banks = function(req, res, next) {
                                 "&origins=" + bank.location +
                                 "&destinations=" + vendor_location +
                                 "&key=AIzaSyBkala2S1ZuGd3Tz8M3i6NT0_vAb07WU6U";
+                            console.log(url);
                             resultPromises.push(rp.get(url));
                         }
 
