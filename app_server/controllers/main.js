@@ -36,20 +36,14 @@ module.exports.postLogin = function(req, res, next) {
         if (err)
             return next(err);
 
-        if (result.rows[0] !== undefined) {
-            if (result.rows[0].validated == true) {
-                //console.log("Logged in")
-                req.session.userId = result.rows[0].id;
-                req.session.userName = result.rows[0].name;
-                req.session.userType = "V";
-                res.render('mainMenu', { name: req.session.userName });
-            } else {
-                res.render('login', { err: "Food truck name and password does not match." });
-            }
+        if (result.rows[0] && result.rows[0].validated) {
+            req.session.userId = result.rows[0].id;
+            req.session.userName = result.rows[0].name;
+            req.session.userType = "V";
+            res.render('mainMenu', { name: req.session.userName });
         } else {
-            res.render('login', { err: "Food truck " + login.name + " not found." });
+            res.render('login', { err: "Invalid food truck credentials." });
         }
-
     });
 };
 
@@ -61,19 +55,14 @@ module.exports.postLoginBank = function(req, res, next) {
         if (err) {
             return next(err);
         }
-        //res.send(200)
-        if (result.rows[0] !== undefined) {
-            if (result.rows[0].validated == true) {
-                console.log("log in");
-                req.session.userId = result.rows[0].id;
-                req.session.userName = result.rows[0].name;
-                req.session.userType = "B";
-                res.render('mainMenuBank', { name: req.session.userName });
-            } else {
-                res.render('login', { err: "Food bank name and password does not match" });
-            }
+
+        if (result.rows[0] && result.rows[0].validated) {
+            req.session.userId = result.rows[0].id;
+            req.session.userName = result.rows[0].name;
+            req.session.userType = "B";
+            res.render('mainMenuBank', { name: req.session.userName });
         } else {
-            res.render('login', { err: "Food bank " + login.name + " not found." });
+            res.render('login', { err: "Invalid food bank credentials." });
         }
     });
 };
