@@ -84,7 +84,7 @@ block content
     function addDonatableFood() {
       $.get("/getDonatable", function(data) {
         data.forEach(function(food) {
-          var newCheckbox = "<div class='form-check'><label class='form-check-label'><input class='form-check-input' type='checkbox' name='" + food.status + "'>" + food.status + "</label></div>";
+          var newCheckbox = "<div class='form-check'><label class='form-check-label'><input class='form-check-input' type='checkbox' name='" + food.id + "'>" + food.status + "</label></div>";
           $("#donateForm").append($(newCheckbox));
         })
       });
