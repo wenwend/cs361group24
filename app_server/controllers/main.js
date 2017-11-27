@@ -131,7 +131,9 @@ module.exports.donations = function(req, res, next) {
             // res.json(result.rows)
             var donations = [];
             for (var i = 0; i < result.rows.length; i++) {
-                donations[i] = { description: result.rows[i].status, date: result.rows[i].date, id: result.rows[i].id };
+                var prettyDate = result.rows[0].date.toString().split("00:")[0];
+                donations[i] = { description: result.rows[i].status, date: prettyDate,
+                    time: result.rows[i].time, id: result.rows[i].id };
             }
             res.render('donations', { name: req.session.userName, donations: donations });
         });
@@ -148,8 +150,9 @@ module.exports.donationDetails = function(req, res, next) {
                 return next(err);
             }
             //res.json(result.rows);
-
-            var details = { id: result.rows[0].id, description: result.rows[0].status, date: result.rows[0].date };
+            var prettyDate = result.rows[0].date.toString().split("00:")[0];
+            var details = { id: result.rows[0].id, description: result.rows[0].status, date: prettyDate,
+                            time: result.rows[0].time };
 
             res.render('donationDetails', { details });
         });
