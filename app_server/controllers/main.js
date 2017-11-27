@@ -98,19 +98,20 @@ module.exports.mainMenuBank = function(req, res) {
 };
 
 /* GET addDonation page */
-module.exports.addDonation = function(req, res) {
+module.exports.addDonatable = function(req, res) {
     if (req.session.userId && req.session.userType == "V") {
-        res.render('addDonation');
+        res.render('addDonatable');
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
 };
 
 /* POST new donation */
-module.exports.postDonation = function(req, res, next) {
+module.exports.postDonatable = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         const donation = req.body;
-        client.query('INSERT INTO donation (status, date) VALUES ($1, $2);', [donation.dStatus, donation.date], function(err, result) {
+        client.query('INSERT INTO donation (status, date, vendor_id, time) VALUES ($1, $2, $3, $4);', [donation.dStatus, donation.date, 
+            req.session.userId, donation.time], function(err, result) {
             if (err) {
                 return next(err);
             }
@@ -122,20 +123,71 @@ module.exports.postDonation = function(req, res, next) {
     }
 };
 
+/* GET donatable food */
+module.exports.getDonatable = function(req, res, next) {
+    if (req.session.userId && req.session.userType == "V") {
+        client.query('SELECT * FROM donation WHERE vendor_id=($1);', [req.session.userId], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+            res.json(result.rows);
+        });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
+};
+
 /* GET donations */
 module.exports.donations = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
-        client.query('SELECT * FROM donation WHERE id=($1);', [req.session.userId], function(err, result) {
+        client.query('SELECT * FROM donation WHERE vendor_id=($1);', [req.session.userId], function(err, result) {
             if (err) {
                 return next(err);
             }
             // res.json(result.rows)
             var donations = [];
             for (var i = 0; i < result.rows.length; i++) {
-                donations[i] = 'Description: ' + result.rows[i].status + ' Date: ' + result.rows[i].date;
+                var prettyDate = result.rows[0].date.toString().split("00:")[0];
+                donations[i] = { description: result.rows[i].status, date: prettyDate,
+                    time: result.rows[i].time, id: result.rows[i].id };
             }
-            res.render('donations', { donations: donations });
+            res.render('donations', { name: req.session.userName, donations: donations });
         });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
+};
+
+/* GET donation details */
+module.exports.donationDetails = function(req, res, next) {
+    if (req.session.userId && req.session.userType == "V" && req.query.id) {
+        client.query('SELECT * FROM donation WHERE id=($1);', [req.query.id], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+            //res.json(result.rows);
+            var prettyDate = result.rows[0].date.toString().split("00:")[0];
+            var details = { id: result.rows[0].id, description: result.rows[0].status, date: prettyDate,
+                            time: result.rows[0].time };
+
+            res.render('donationDetails', { details });
+        });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
+};
+
+module.exports.postDonation = function(req, res, next) {
+    if (req.session.userId && req.session.userType == "V") {
+        // var donation = req.body;
+        // client.query('INSERT INTO completedDonation (vendor_id, bank_id, food, date_offered) VALUES($!, $2, $3, $4);',
+        //         [req.session.userId, donation.bankId, donation.donations, Date.now()], function(err, result) {
+        //     if (err) {
+        //         return next(err);
+        //     }
+
+        res.send(req.body);
+        // });
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
@@ -145,8 +197,7 @@ module.exports.donations = function(req, res, next) {
 module.exports.banks = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         client.query(
-            'SELECT location, max_dis FROM vendor WHERE id=($1);',
-            [req.session.userId],
+            'SELECT location, max_dis FROM vendor WHERE id=($1);', [req.session.userId],
             function(verr, vresult) {
                 if (verr)
                     return next(verr);
@@ -155,7 +206,7 @@ module.exports.banks = function(req, res, next) {
                 var vendor_location = vresult.rows[0].location;
 
                 client.query(
-                    'SELECT name, email, phone, location, open_at, close_at FROM bank WHERE location IS NOT NULL',
+                    'SELECT id, name, email, phone, location, open_at, close_at FROM bank WHERE location IS NOT NULL',
                     function(err, bresults) {
                         if (err)
                             return next(err);
@@ -166,10 +217,10 @@ module.exports.banks = function(req, res, next) {
                         var resultPromises = new Array();
                         for (var bank of bresults.rows) {
                             var url =
-                                "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial"
-                                + "&origins=" + bank.location
-                                + "&destinations=" + vendor_location
-                                + "&key=AIzaSyBkala2S1ZuGd3Tz8M3i6NT0_vAb07WU6U";
+                                "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial" +
+                                "&origins=" + bank.location +
+                                "&destinations=" + vendor_location +
+                                "&key=AIzaSyBkala2S1ZuGd3Tz8M3i6NT0_vAb07WU6U";
                             resultPromises.push(rp.get(url));
                         }
 
@@ -180,42 +231,42 @@ module.exports.banks = function(req, res, next) {
                             // radius.
                             var validBanks = new Array();
                             for (var i = 0; i < results.length; ++i) {
-                                var milesToBank =
-                                    (JSON.parse(results[i]))["rows"][0]["elements"][0]["distance"]["value"] / METERS_IN_MILE;
+                                if ((JSON.parse(results[i]))["rows"][0]["elements"][0]["status"] == "OK") {
+                                    var milesToBank =
+                                        (JSON.parse(results[i]))["rows"][0]["elements"][0]["distance"]["value"] / METERS_IN_MILE;
 
-                                if (milesToBank <= Math.abs(radius)) {
-                                    // Format the open and close times
-                                    var open = moment(bresults.rows[i].open_at, "H:m:s"),
-                                        close = moment(bresults.rows[i].close_at, "H:m:s");
-                                    bresults.rows[i].open_at = open.format("h:mmA");
-                                    bresults.rows[i].close_at = close.format("h:mmA");
+                                    if (milesToBank <= Math.abs(radius)) {
+                                        // Format the open and close times
+                                        var open = moment(bresults.rows[i].open_at, "H:m:s"),
+                                            close = moment(bresults.rows[i].close_at, "H:m:s");
+                                        bresults.rows[i].open_at = open.format("h:mmA");
+                                        bresults.rows[i].close_at = close.format("h:mmA");
 
-                                    // Format the phone number
-                                    var phone = bresults.rows[i].phone;
-                                    bresults.rows[i].phone = phone.slice(0, 3) + "-" + phone.slice(3, 6) + "-" + phone.slice(6);
+                                        // Format the phone number
+                                        var phone = bresults.rows[i].phone;
+                                        bresults.rows[i].phone = phone.slice(0, 3) + "-" + phone.slice(3, 6) + "-" + phone.slice(6);
 
-                                    bresults.rows[i].distance_to = milesToBank.toFixed(2);
-                                    validBanks.push(bresults.rows[i]);
+                                        bresults.rows[i].distance_to = milesToBank.toFixed(2);
+                                        validBanks.push(bresults.rows[i]);
+                                    }
                                 }
                             }
 
                             // Sort the banks based on distance
                             validBanks.sort(function(a, b) {
                                 return a.distance_to - b.distance_to;
-                            })
+                            });
 
                             // Render page with valid banks.
-                            res.render('banks',
-                                {
-                                    banks: validBanks,
-                                    radius: radius,
-                                    location: vendor_location
-                                });
+                            res.render('banks', {
+                                banks: validBanks,
+                                radius: radius,
+                                location: vendor_location
+                            });
                         });
                     });
             });
-    }
-    else {
+    } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
 };

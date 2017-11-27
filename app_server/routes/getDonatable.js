@@ -3,6 +3,6 @@ var router = express.Router();
 var ctrlMain = require('../controllers/main');
 
 /* GET addDonation page */
-router.post('/', ctrlMain.postDonation);
+router.get('/', ctrlMain.getDonatable);
 
 module.exports = router;

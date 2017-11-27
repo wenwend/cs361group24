@@ -1,10 +1,20 @@
 extends layout
 
 block content
-  h1 Donations!
+  h1 #{name}'s Donations
 
-  ol
-  for d in donations
-    li= d
-  else
-    li You don't have any donations yet!
+  table.table-responsive.table-hover
+    captain
+    thead-light
+    tr.table-primary
+      th.col-sm-4 Description
+      th.col-sm-3 Date
+      th.col-sm-3 Time
+      th.col-sm-2 Details
+
+    for d in donations
+          tr
+            td.col-sm-4= d.description
+            td.col-sm-3= d.date
+            td.col-sm-3= d.time
+            td.col <a href=donationDetails?id=#{d.id}>Details 

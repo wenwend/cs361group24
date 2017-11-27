@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var ctrlMain = require('../controllers/main');
 
-/* GET addDonation page */
-router.post('/', ctrlMain.postDonation);
+/* GET donations */
+router.get('/', ctrlMain.donationDetails);
 
 module.exports = router;

@@ -3,9 +3,9 @@ extends layout
 block content
   .container
     h2 Food Banks in your Area
-    
+
     table.table-responsive.table-hover
-      captain 
+      captain
         p-lead Displaying banks within #{radius}m of #{location}
       thead-light
         tr.table-primary
@@ -16,22 +16,48 @@ block content
           th.col Email
           th.col Phone
           th.col Location
+          th.col Donate
 
-        
+
+
         for bank in banks
           tr
-            td.col #{bank.name} 
+            td.col #{bank.name}
             td.col #{bank.distance_to}m
             td.col #{bank.open_at}
             td.col #{bank.close_at}
-            td.col #{bank.email}
-            td.col #{bank.phone}
-            td.col #{bank.location}
+            td.col
+              a.email #{bank.email}
+            td.col
+              a.phone #{bank.phone}
+            td.col
+              a.location #{bank.location}
+            td.col
+              button.btn.btn-primary.donate(type="button" id="#{bank.id}") Donate
+
+    .modal.fade(id="donateModal" tabindex="-1" role="dialog" aria-labelledby="donateModalLabel" aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title Donate Food
+            button.close(type="button" data-dismiss="modal" aria-label="Close")
+              span(aria-hidden="true")&times;
+          .modal-body
+            form(id="donateForm")
+              h5 Select food to donate:
+          .modal-footer
+            button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+            button.btn.btn-primary(type="button" onclick="submitDonation()") Donate
+
   script.
+    var bankId = -1;
+
     document.addEventListener("DOMContentLoaded", function(event) {
       linkEmail();
       linkPhone();
       linkLocation();
+      linkDonateButtons();
+      addDonatableFood();
     });
 
     function linkEmail() {
@@ -53,4 +79,35 @@ block content
         var location = $(this).text();
         $(this).attr("href", "https://www.google.com/maps/search/?api=1&query=" + escape(location));
       })
+    }
+
+    function addDonatableFood() {
+      $.get("/getDonatable", function(data) {
+        data.forEach(function(food) {
+          var newCheckbox = "<div class='form-check'><label class='form-check-label'><input class='form-check-input' type='checkbox' name='" + food.status + "'>" + food.status + "</label></div>";
+          $("#donateForm").append($(newCheckbox));
+        })
+      });
+    }
+
+    function linkDonateButtons() {
+      $(".donate").each(function() {
+        var id = $(this).attr("id");
+        $(this).click(id, function(event) {
+          bankId = event.data;
+          $("#donateModal").modal("show");
+        });
+      });
+    }
+
+    function submitDonation() {
+      var foodToDonate = [];
+      $("input:checked").each(function() {
+        foodToDonate.push($(this).attr("name"));
+      });
+      $.post("/postDonation", { 'donations[]': foodToDonate, bankId: bankId }, function(data) {
+        $("#donateModal").modal("hide");
+        alert("Sent donation offer to bank. Awaiting confirmation");
+        console.log(data);
+      });
     }
