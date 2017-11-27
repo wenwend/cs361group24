@@ -19,7 +19,9 @@ block content
             br
             .form-row
               .col
-                input.form-control(required type="text", name="name" id="vendor-name" placeholder="Food Truck Name")
+                input.form-control(required type="text", name="name" id="vendor-name" placeholder="Food Truck Name")  
+              .col
+                input.form-control(required type="chkpass", name="pass" id="vendor-pass" placeholder="Your password here")
               .col
                 input.btn.btn-primary(type="submit", id="loginSubmit")
         .tab-pane(id="2")
@@ -28,6 +30,8 @@ block content
             .form-row
               .col
                 input.form-control(required type="text", name="name" id="bank-name" placeholder="Food Bank Name")
+              .col
+                input.form-control(required type="chkpass", name="pass" id="bank-pass" placeholder="Your password here")
               .col
                 input.btn.btn-primary(type="submit", id="loginBankSubmit")
   
