@@ -79,7 +79,8 @@ module.exports.mainMenu = function(req, res) {
 /* GET mainMenuBank page */
 module.exports.mainMenuBank = function(req, res) {
     if (req.session.userId && req.session.userType == "B") {
-        client.query('SELECT donation_id FROM completed_donations where bank_id=($1);', [req.session.userId], function(err, result) {
+        console.log(req.session.userId);
+        client.query('SELECT donation_id FROM completed_donations;', function(err, result) {
             if (err) {
                 return next(err);
             }
