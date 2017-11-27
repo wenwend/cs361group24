@@ -194,7 +194,7 @@ module.exports.postDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         var donation = req.body;
         donation['donations[]'].forEach(function(donation_id) {
-            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, confirmed) VALUES($1, $2, $3, $4);', [req.session.userId, donation.bankId, donation_Id, false], function(err, result) {
+            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, confirmed) VALUES($1, $2, $3, $4);', [req.session.userId, donation.bankId, donation_id, false], function(err, result) {
                 if (err) {
                     return next(err);
                 }
