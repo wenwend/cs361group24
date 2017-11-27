@@ -179,15 +179,17 @@ module.exports.donationDetails = function(req, res, next) {
 
 module.exports.postDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
-        // var donation = req.body;
-        // client.query('INSERT INTO completedDonation (vendor_id, bank_id, food, date_offered) VALUES($!, $2, $3, $4);',
-        //         [req.session.userId, donation.bankId, donation.donations, Date.now()], function(err, result) {
-        //     if (err) {
-        //         return next(err);
-        //     }
+         var donation = req.body;
+
+         // only one donation at a time allowed, time is not included as
+         // DATE.now wasn't working
+         client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, donation.donId, donation.desc, false], function(err, result) {;
+             if (err) {
+                 return next(err);
+             }
 
         res.send(req.body);
-        // });
+         }); 
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
