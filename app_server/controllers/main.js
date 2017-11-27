@@ -26,40 +26,56 @@ module.exports.login = function(req, res) {
     res.render('login');
 };
 
-/* POST login */
+/* POST vendor login */
 module.exports.postLogin = function(req, res, next) {
     const login = req.body;
-    client.query('SELECT id, name FROM vendor WHERE name=($1);', [login.name], function(err, result) {
+
+    /* Check encrypted password of type chkpass.
+       To compare, simply compare against a clear text password and the comparison function will encrypt it before comparing.  */
+    client.query('SELECT id, name, pass = ($2) as validated FROM vendor WHERE name=($1);', [login.name, login.pass], function(err, result) {
         if (err)
             return next(err);
 
-        if (result.rows[0] !== undefined) {
-            req.session.userId = result.rows[0].id;
-            req.session.userName = result.rows[0].name;
-            req.session.userType = "V";
-            res.render('mainMenu', { name: req.session.userName });
-        } else {
+        if ( result.rows[0] !== undefined) {
+            if ( result.rows[0].validated == true ) {
+                //console.log("Logged in")
+                req.session.userId = result.rows[0].id;
+                req.session.userName = result.rows[0].name;
+                req.session.userType = "V";
+                res.render('mainMenu', { name: req.session.userName });
+            } 
+            else {
+                res.render('login', { err: "Food truck name and password does not match." });
+            }
+        } else{
             res.render('login', { err: "Food truck " + login.name + " not found." });
         }
+
     });
 };
 
 /* POST login bank*/
 module.exports.postLoginBank = function(req, res, next) {
     const login = req.body;
-    client.query('SELECT id, name FROM bank WHERE name=($1);', [login.name], function(err, result) {
+     /* Check encrypted password of type chkpass.*/
+    client.query('SELECT id, name, pass =($2) as validated FROM bank WHERE name=($1);', [login.name,login.pass], function(err, result) {
         if (err) {
             return next(err);
         }
         //res.send(200)
         if (result.rows[0] !== undefined) {
-            req.session.userId = result.rows[0].id;
-            req.session.userName = result.rows[0].name;
-            req.session.userType = "B";
-            res.render('mainMenuBank', { name: req.session.userName });
+            if(result.rows[0].validated == true){
+                console.log("log in");
+                req.session.userId = result.rows[0].id;
+                req.session.userName = result.rows[0].name;
+                req.session.userType = "B";
+                res.render('mainMenuBank', { name: req.session.userName });
         } else {
-            res.render('login', { err: "Food bank " + login.name + " not found." });
+            res.render('login', { err: "Food bank name and password does not match" });
         }
+    }else{
+        res.render('login', { err: "Food bank " + login.name + " not found." });
+    }
     });
 };
 
