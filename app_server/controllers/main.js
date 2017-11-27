@@ -36,18 +36,17 @@ module.exports.postLogin = function(req, res, next) {
         if (err)
             return next(err);
 
-        if ( result.rows[0] !== undefined) {
-            if ( result.rows[0].validated == true ) {
+        if (result.rows[0] !== undefined) {
+            if (result.rows[0].validated == true) {
                 //console.log("Logged in")
                 req.session.userId = result.rows[0].id;
                 req.session.userName = result.rows[0].name;
                 req.session.userType = "V";
                 res.render('mainMenu', { name: req.session.userName });
-            } 
-            else {
+            } else {
                 res.render('login', { err: "Food truck name and password does not match." });
             }
-        } else{
+        } else {
             res.render('login', { err: "Food truck " + login.name + " not found." });
         }
 
@@ -57,25 +56,25 @@ module.exports.postLogin = function(req, res, next) {
 /* POST login bank*/
 module.exports.postLoginBank = function(req, res, next) {
     const login = req.body;
-     /* Check encrypted password of type chkpass.*/
-    client.query('SELECT id, name, pass =($2) as validated FROM bank WHERE name=($1);', [login.name,login.pass], function(err, result) {
+    /* Check encrypted password of type chkpass.*/
+    client.query('SELECT id, name, pass =($2) as validated FROM bank WHERE name=($1);', [login.name, login.pass], function(err, result) {
         if (err) {
             return next(err);
         }
         //res.send(200)
         if (result.rows[0] !== undefined) {
-            if(result.rows[0].validated == true){
+            if (result.rows[0].validated == true) {
                 console.log("log in");
                 req.session.userId = result.rows[0].id;
                 req.session.userName = result.rows[0].name;
                 req.session.userType = "B";
                 res.render('mainMenuBank', { name: req.session.userName });
+            } else {
+                res.render('login', { err: "Food bank name and password does not match" });
+            }
         } else {
-            res.render('login', { err: "Food bank name and password does not match" });
+            res.render('login', { err: "Food bank " + login.name + " not found." });
         }
-    }else{
-        res.render('login', { err: "Food bank " + login.name + " not found." });
-    }
     });
 };
 
@@ -91,7 +90,12 @@ module.exports.mainMenu = function(req, res) {
 /* GET mainMenuBank page */
 module.exports.mainMenuBank = function(req, res) {
     if (req.session.userId && req.session.userType == "B") {
-        res.render('mainMenuBank', { name: req.session.userName });
+        client.query('SELECT donation_id FROM completed_donations where bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+            res.render('mainMenuBank', { name: req.session.userName, unconfirmedDonations: result.rows.length });
+        });
     } else {
         res.render('login', { err: "You must be logged in as a food bank to access that page" });
     }
@@ -110,8 +114,9 @@ module.exports.addDonatable = function(req, res) {
 module.exports.postDonatable = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         const donation = req.body;
-        client.query('INSERT INTO donation (status, date, vendor_id, time) VALUES ($1, $2, $3, $4);', [donation.dStatus, donation.date, 
-            req.session.userId, donation.time], function(err, result) {
+        client.query('INSERT INTO donation (status, date, vendor_id, time) VALUES ($1, $2, $3, $4);', [donation.dStatus, donation.date,
+            req.session.userId, donation.time
+        ], function(err, result) {
             if (err) {
                 return next(err);
             }
@@ -148,8 +153,12 @@ module.exports.donations = function(req, res, next) {
             var donations = [];
             for (var i = 0; i < result.rows.length; i++) {
                 var prettyDate = result.rows[0].date.toString().split("00:")[0];
-                donations[i] = { description: result.rows[i].status, date: prettyDate,
-                    time: result.rows[i].time, id: result.rows[i].id };
+                donations[i] = {
+                    description: result.rows[i].status,
+                    date: prettyDate,
+                    time: result.rows[i].time,
+                    id: result.rows[i].id
+                };
             }
             res.render('donations', { name: req.session.userName, donations: donations });
         });
@@ -167,8 +176,12 @@ module.exports.donationDetails = function(req, res, next) {
             }
             //res.json(result.rows);
             var prettyDate = result.rows[0].date.toString().split("00:")[0];
-            var details = { id: result.rows[0].id, description: result.rows[0].status, date: prettyDate,
-                            time: result.rows[0].time };
+            var details = {
+                id: result.rows[0].id,
+                description: result.rows[0].status,
+                date: prettyDate,
+                time: result.rows[0].time
+            };
 
             res.render('donationDetails', { details });
         });
@@ -179,17 +192,17 @@ module.exports.donationDetails = function(req, res, next) {
 
 module.exports.postDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
-         var donation = req.body;
+        var donation = req.body;
 
-         // only one donation at a time allowed, time is not included as
-         // DATE.now wasn't working
-         client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, donation.donId, donation.desc, false], function(err, result) {;
-             if (err) {
-                 return next(err);
-             }
+        // only one donation at a time allowed, time is not included as
+        // DATE.now wasn't working
+        client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, donation.donId, donation.desc, false], function(err, result) {;
+            if (err) {
+                return next(err);
+            }
 
-        res.send(req.body);
-         }); 
+            res.send(req.body);
+        });
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }

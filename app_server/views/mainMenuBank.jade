@@ -1,7 +1,10 @@
 extends layout
 
 block content
-  h1 Welcome #{name}!
-  
+  .container
+    h1 Welcome #{name}!
+    .row You have
+      em #{unconfirmedDonations}
+      | donations to confirm.
 
 
