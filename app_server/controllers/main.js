@@ -294,7 +294,7 @@ module.exports.postVendor = function(req, res, next) {
             return next(err);
         }
         if (result.rows.length == 0) {
-            client.query('INSERT INTO vendor (type, name, email, phone, location, max_dis) VALUES ($1, $2, $3, $4, $5, $6);', ['V', vendor.name, vendor.email,
+            client.query('INSERT INTO vendor (type, name, email, pass, phone, location, max_dis) VALUES ($1, $2, $3, $4, $5, $6, $7);', ['V', vendor.name, vendor.email, vendor.pass,
                 vendor.phone, vendor.location, vendor.max_dis
             ], function(err, result) {
                 if (err) {
@@ -321,7 +321,7 @@ module.exports.postBank = function(req, res, next) {
             return next(err);
         }
         if (result.rows.length == 0) {
-            client.query('INSERT INTO bank (type, name, email, phone, open_at, close_at, location) VALUES ($1, $2, $3, $4, $5, $6, $7);', ['B', bank.name, bank.email, bank.phone, bank.open_at, bank.close_at, bank.location], function(err, result) {
+            client.query('INSERT INTO bank (type, name, email, pass, phone, open_at, close_at, location) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);', ['B', bank.name, bank.email, bank.pass, bank.phone, bank.open_at, bank.close_at, bank.location], function(err, result) {
                 if (err) {
                     return next(err);
                 }
