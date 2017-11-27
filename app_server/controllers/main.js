@@ -60,7 +60,12 @@ module.exports.postLoginBank = function(req, res, next) {
             req.session.userId = result.rows[0].id;
             req.session.userName = result.rows[0].name;
             req.session.userType = "B";
-            res.render('mainMenuBank', { name: req.session.userName });
+            client.query('SELECT donation_id FROM completed_donations WHERE bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
+                if (err) {
+                    return next(err);
+                }
+                res.render('mainMenuBank', { name: req.session.userName, numOfDonations: result.rows.length, unconfirmedDonations: result.rows });
+            });
         } else {
             res.render('login', { err: "Invalid food bank credentials." });
         }
@@ -79,8 +84,7 @@ module.exports.mainMenu = function(req, res) {
 /* GET mainMenuBank page */
 module.exports.mainMenuBank = function(req, res) {
     if (req.session.userId && req.session.userType == "B") {
-        console.log(req.session.userId);
-        client.query('SELECT donation_id FROM completed_donations;', function(err, result) {
+        client.query('SELECT donation_id FROM completed_donations WHERE bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
             if (err) {
                 return next(err);
             }
