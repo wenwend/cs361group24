@@ -105,7 +105,7 @@ block content
       $("input:checked").each(function() {
         foodToDonate.push($(this).attr("name"));
       });
-      $.post("/postDonation", { 'donations[]': foodToDonate, bankId: bankId }, function(data) {
+      $.post("/postDonation", { donations: foodToDonate, bankId: bankId }, function(data) {
         $("#donateModal").modal("hide");
         alert("Sent donation offer to bank. Awaiting confirmation");
         console.log(data);
