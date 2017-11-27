@@ -90,11 +90,11 @@ module.exports.mainMenu = function(req, res) {
 /* GET mainMenuBank page */
 module.exports.mainMenuBank = function(req, res) {
     if (req.session.userId && req.session.userType == "B") {
-        client.query('SELECT donation_id FROM completed_donations where bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
+        client.query('SELECT donation_desc FROM completed_donations where bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
             if (err) {
                 return next(err);
             }
-            res.render('mainMenuBank', { name: req.session.userName, unconfirmedDonations: result.rows.length });
+            res.render('mainMenuBank', { name: req.session.userName, numOfDonations: result.rows.length, unconfirmedDonations: result.rows });
         });
     } else {
         res.render('login', { err: "You must be logged in as a food bank to access that page" });
@@ -206,6 +206,16 @@ module.exports.postDonation = function(req, res, next) {
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
+};
+
+/* GET all completed donations */
+module.exports.completedDonations = function(req, res, next) {
+    client.query('SELECT * FROM completed_donations;', [], function(err, result) {
+        if (err) {
+            return next(err);
+        }
+        res.json(result.rows);
+    });
 };
 
 /* GET nearby banks */
