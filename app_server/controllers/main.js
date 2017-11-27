@@ -90,7 +90,7 @@ module.exports.mainMenu = function(req, res) {
 /* GET mainMenuBank page */
 module.exports.mainMenuBank = function(req, res) {
     if (req.session.userId && req.session.userType == "B") {
-        client.query('SELECT donation_desc FROM completed_donations where bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
+        client.query('SELECT donation_id FROM completed_donations where bank_id=($1);', [req.session.userId], function(err, result) {
             if (err) {
                 return next(err);
             }
@@ -194,15 +194,14 @@ module.exports.postDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         var donation = req.body;
 
-        // only one donation at a time allowed, time is not included as
-        // DATE.now wasn't working
-        client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, donation.donId, donation.desc, false], function(err, result) {;
-            if (err) {
-                return next(err);
-            }
-
-            res.send(req.body);
+        donation.donations.forEach(function(donation_id) {
+            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, confirmed) VALUES($1, $2, $3, $4);', [req.session.userId, donation.bankId, donation_Id, false], function(err, result) {
+                if (err) {
+                    return next(err);
+                }
+            });
         });
+        res.send(req.body);
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
