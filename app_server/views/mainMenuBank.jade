@@ -3,7 +3,7 @@ extends layout
 block content
   .container
     h1 Welcome #{name}!
-    if numOfDonations
+    if (numOfDonations > 0)
       .row
         h2 You have #{numOfDonations} donations to confirm.
       for donation in unconfirmedDonations
