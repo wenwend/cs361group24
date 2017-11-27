@@ -60,7 +60,7 @@ app.use('/getDonatable', getDonatable);
 app.use('/donations', donations);
 app.use('/donationDetails', donationDetails);
 app.use('/postDonation', postDonation);
-app.use('completedDonations', completedDonations);
+app.use('/completedDonations', completedDonations);
 app.use('/banks', banks);
 app.use('/addBank', addBank);
 app.use('/postBank', postBank);
