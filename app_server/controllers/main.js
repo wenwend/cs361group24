@@ -84,7 +84,7 @@ module.exports.mainMenu = function(req, res) {
 /* GET mainMenuBank page */
 module.exports.mainMenuBank = function(req, res) {
     if (req.session.userId && req.session.userType == "B") {
-        client.query('SELECT donation_id FROM completed_donations WHERE bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
+        client.query('SELECT donation_id, donation_desc FROM completed_donations WHERE bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
             if (err) {
                 return next(err);
             }
@@ -222,21 +222,21 @@ module.exports.postDonation = function(req, res, next) {
 
         // handle single or multiple donations differently
         if (Array.isArray(ids) == false) {
-            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, ids, descriptions, today, false], function(err, result) {
+            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);', [req.session.userId, donation.bankId, ids, descriptions, today, false], function(err, result) {
                 if (err) {
                     return next(err);
                 }
             });
         } else {
             for (var i in ids) {
-                client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, ids[i], descriptions[i], today, false], function(err, result) {
+                client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);', [req.session.userId, donation.bankId, ids[i], descriptions[i], today, false], function(err, result) {
                     if (err) {
                         return next(err);
                     }
                 });
             }
         }
-        res.send(req.body);
+        res.send("Success");
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
