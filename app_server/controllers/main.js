@@ -187,13 +187,34 @@ module.exports.donationDetails = function(req, res, next) {
 module.exports.postDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         var donation = req.body;
+        var ids = donation['donations[]'];
+
+        // handle single or multiple donations differently
+        if (Array.isArray(ids) == false) {
+            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, confirmed) VALUES($1, $2, $3, $4);', [req.session.userId, donation.bankId, ids, false], function(err, result) {
+                if (err) {
+                    return next(err);
+                }
+            });
+        } else {
+
+        for (var i in ids) {
+            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, confirmed) VALUES($1, $2, $3, $4);', [req.session.userId, donation.bankId, ids[i], false], function(err, result) {
+                if (err) {
+                    return next(err);
+                }
+            });
+        }
+
+/*
         donation['donations[]'].forEach(function(donation_id) {
             client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, confirmed) VALUES($1, $2, $3, $4);', [req.session.userId, donation.bankId, donation_id, false], function(err, result) {
                 if (err) {
                     return next(err);
                 }
             });
-        });
+            */
+        };
         res.send(req.body);
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
