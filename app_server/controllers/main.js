@@ -407,15 +407,15 @@ module.exports.confirmDonation = function(req, res, next) {
             if (err) {
                 return next(err);
             }
-        });
-        client.query('DELETE from donation WHERE id = ($3);', [confirmed.donId], function(err, result) {
-            if (err) {
-                return next(err);
-            }
+            client.query('DELETE from donation WHERE id = ($3);', [confirmed.donId], function(err, result) {
+                if (err) {
+                    return next(err);
+                }
+
+                res.redirect('/mainMenuBank');
+            });
         });
 
-        // need to wait for db to update first
-        res.redirect('/mainMenuBank');
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
