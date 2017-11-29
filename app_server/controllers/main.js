@@ -214,6 +214,7 @@ module.exports.postDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         var donation = req.body;
         var ids = donation['donations[]'];
+        console.log(ids);
 
         // handle single or multiple donations differently
         if (Array.isArray(ids) == false) {
