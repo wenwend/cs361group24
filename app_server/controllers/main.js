@@ -64,7 +64,7 @@ module.exports.postLoginBank = function(req, res, next) {
 				if (err) {
 					return next(err);
 				}
-				res.render('mainMenuBank', { name: req.session.userName, numOfDonations: result.rows.length, unconfirmedDonations: result.rows });
+            res.redirect('/mainMenuBank');
 			});
 		} else {
 			res.render('login', { err: "Invalid food bank credentials." });
@@ -397,4 +397,24 @@ module.exports.postBank = function(req, res, next) {
 		}
 
 	});
+};
+
+/* POST donation confirmation*/
+module.exports.confirmDonation = function(req, res, next) {
+	if (req.session.userId && req.session.userType == "B") {
+		const donation = req.body;
+		client.query('UPDATE completed_donations SET confired = $1 where donation_id = $2;', [false, donation.donId], function(err, result) {
+			if (err) {
+				return next(err);
+			}
+        });
+	    client.query('DELETE from WHERE id = $1;', [donation.donId], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+		});
+        res.redirect('/mainMenuBank');
+	} else {
+		res.render('login', { err: "You must be logged in as a food truck to access that page" });
+	}
 };
