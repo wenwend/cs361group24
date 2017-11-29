@@ -212,21 +212,24 @@ module.exports.donationDetails = function(req, res, next) {
 
 module.exports.postDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
-        var donation = req.body;
-        var ids = donation['donations[]'];
+        var donation = req.body,
+            ids = donation['ids[]'],
+            descriptions = donation['descriptions[]'];
+
         console.log(donation);
+
+        var today = new Date().toJSON().slice(0, 10);
 
         // handle single or multiple donations differently
         if (Array.isArray(ids) == false) {
-            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, ids.id, ids.desc, false], function(err, result) {
+            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, ids, descriptions, today, false], function(err, result) {
                 if (err) {
                     return next(err);
                 }
             });
         } else {
-
             for (var i in ids) {
-                client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, ids[i].id, ids[i].desc, false], function(err, result) {
+                client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5);', [req.session.userId, donation.bankId, ids[i], descriptions[i], today, false], function(err, result) {
                     if (err) {
                         return next(err);
                     }

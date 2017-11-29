@@ -101,11 +101,13 @@ block content
     }
 
     function submitDonation() {
-      var foodToDonate = [];
+      var ids = [],
+          descriptions = [];
       $("input:checked").each(function() {
-        foodToDonate.push({ id: $(this).attr("name"), desc: $(this).parent().text() });
+        ids.push($(this).attr("name"));
+        descriptions.push($(this).parent().text());
       });
-      $.post("/postDonation", { donations: foodToDonate, bankId: bankId }, function(data) {
+      $.post("/postDonation", { ids: ids, descs: descriptions, bankId: bankId }, function(data) {
         $("#donateModal").modal("hide");
         alert("Sent donation offer to bank. Awaiting confirmation");
         console.log(data);
