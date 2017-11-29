@@ -103,7 +103,7 @@ block content
     function submitDonation() {
       var foodToDonate = [];
       $("input:checked").each(function() {
-        foodToDonate.push($(this).attr("name"));
+        foodToDonate.push({ id: $(this).attr("name"), desc: $(this).parent().text() });
       });
       $.post("/postDonation", { donations: foodToDonate, bankId: bankId }, function(data) {
         $("#donateModal").modal("hide");
