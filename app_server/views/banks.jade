@@ -107,7 +107,7 @@ block content
         ids.push($(this).attr("name"));
         descriptions.push($(this).parent().text());
       });
-      $.post("/postDonation", { ids: ids, descs: descriptions, bankId: bankId }, function(data) {
+      $.post("/postDonation", { ids: ids, descriptions: descriptions, bankId: bankId }, function(data) {
         $("#donateModal").modal("hide");
         alert("Sent donation offer to bank. Awaiting confirmation");
         console.log(data);
