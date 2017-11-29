@@ -220,23 +220,28 @@ module.exports.postDonation = function(req, res, next) {
 
         var today = new Date().toJSON().slice(0, 10);
 
-        // handle single or multiple donations differently
-        if (Array.isArray(ids) == false) {
-            client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);', [req.session.userId, donation.bankId, ids, descriptions, today, false], function(err, result) {
-                if (err) {
-                    return next(err);
-                }
-            });
+	var queries = new Array();
+
+	// handle single or multiple donations differently
+	if (Array.isArray(ids) == false) {
+            queries.push(client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);',
+				      [req.session.userId, donation.bankId, ids, descriptions, today, false]));
         } else {
             for (var i in ids) {
-                client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);', [req.session.userId, donation.bankId, ids[i], descriptions[i], today, false], function(err, result) {
-                    if (err) {
-                        return next(err);
-                    }
-                });
+		queries.push(client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);',
+					  [req.session.userId, donation.bankId, ids[i], descriptions[i], today, false]));
             }
         }
-        res.send("Success");
+
+	// Wait for all queries to complete before returning success to user.
+	Promise.all(queries)
+	    .then(
+		function () {
+		    res.sendStatus(200);
+		},
+		function (err) {
+		    return next(err);
+		});
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
