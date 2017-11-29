@@ -402,17 +402,19 @@ module.exports.postBank = function(req, res, next) {
 /* POST donation confirmation*/
 module.exports.confirmDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "B") {
-        const donation = req.body;
-        client.query('UPDATE completed_donations SET confired = $1 where donation_id = $2;', [false, donation.donId], function(err, result) {
+        const confirmed = req.body;
+        client.query('UPDATE completed_donations SET confirmed = ($1) WHERE donation_id = ($2);', [true, confirmed.donId], function(err, result) {
             if (err) {
                 return next(err);
             }
         });
-        client.query('DELETE from WHERE id = $1;', [donation.donId], function(err, result) {
+        client.query('DELETE from donation WHERE id = ($3);', [confirmed.donId], function(err, result) {
             if (err) {
                 return next(err);
             }
         });
+
+        // need to wait for db to update first
         res.redirect('/mainMenuBank');
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
