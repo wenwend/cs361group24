@@ -26,6 +26,7 @@ var completedDonations = require('./app_server/routes/completedDonations');
 var banks = require('./app_server/routes/banks');
 var addBank = require('./app_server/routes/addBank');
 var postBank = require('./app_server/routes/postBank');
+var searchByDate = require('./app_server/routes/searchByDate');
 
 var app = express();
 
@@ -64,6 +65,7 @@ app.use('/completedDonations', completedDonations);
 app.use('/banks', banks);
 app.use('/addBank', addBank);
 app.use('/postBank', postBank);
+app.use('/searchByDate',searchByDate);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
