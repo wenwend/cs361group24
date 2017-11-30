@@ -260,7 +260,7 @@ module.exports.postDonation = function(req, res, next) {
         Promise.all(queries)
             .then(
                 function() {
-                    res.sendStatus(200);
+                    res.redirect("/mainMenuBank");
                 },
                 function(err) {
                     return next(err);
