@@ -29,7 +29,6 @@ var postBank = require('./app_server/routes/postBank');
 var searchByDate = require('./app_server/routes/searchByDate');
 var confirmDonation = require('./app_server/routes/confirmDonation');
 
-
 var app = express();
 
 // view engine setup

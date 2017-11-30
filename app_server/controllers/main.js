@@ -60,12 +60,14 @@ module.exports.postLoginBank = function(req, res, next) {
             req.session.userId = result.rows[0].id;
             req.session.userName = result.rows[0].name;
             req.session.userType = "B";
+            /*
             client.query('SELECT donation_id FROM completed_donations WHERE bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
                 if (err) {
                     return next(err);
                 }
+                */
                 res.redirect('/mainMenuBank');
-            });
+            //});
         } else {
             res.render('login', { err: "Invalid food bank credentials." });
         }
@@ -84,7 +86,7 @@ module.exports.mainMenu = function(req, res) {
 /* GET mainMenuBank page */
 module.exports.mainMenuBank = function(req, res) {
     if (req.session.userId && req.session.userType == "B") {
-        client.query('SELECT donation_id, donation_desc FROM completed_donations WHERE bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
+        client.query('SELECT * FROM completed_donations WHERE bank_id=($1) AND NOT confirmed;', [req.session.userId], function(err, result) {
             if (err) {
                 return next(err);
             }
@@ -411,8 +413,7 @@ module.exports.confirmDonation = function(req, res, next) {
                 if (err) {
                     return next(err);
                 }
-
-                res.redirect('/mainMenuBank');
+                res.redirect('mainMenuBank');
             });
         });
 
@@ -420,3 +421,4 @@ module.exports.confirmDonation = function(req, res, next) {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
 };
+

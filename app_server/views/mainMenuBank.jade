@@ -7,7 +7,8 @@ block content
       .row
         h2 You have #{numOfDonations} donations to confirm.
       for donation in unconfirmedDonations
-        .row #{donation.donation_id}
+        .row 
+          td.col #{donation.donation_desc}
           td.col
             form(id="#{donation.donation_id}")
               button.btn.btn-primary.confirm(type="button", onclick="submitConfirmation(#{donation.donation_id})", id="#{donation.donation_id}") Confirm
