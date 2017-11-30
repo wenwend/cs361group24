@@ -99,17 +99,30 @@ block content
         });
       });
     }
-
+    
     function submitDonation() {
       var ids = [],
           descriptions = [];
       $("input:checked").each(function() {
-        ids.push($(this).attr("name"));
-        descriptions.push($(this).parent().text());
+          ids.push($(this).attr("name"));
+          descriptions.push($(this).parent().text());
       });
-      $.post("/postDonation", { ids: ids, descriptions: descriptions, bankId: bankId }, function(data) {
-        $("#donateModal").modal("hide");
-        alert("Sent donation offer to bank. Awaiting confirmation");
-        console.log(data);
+      $.ajax({
+          type: "POST",
+          url: "/postDonation",
+          data: { ids: ids, descriptions: descriptions, bankId: bankId },
+          error: submitDonateError,
+          success: submitDonateSuccess
       });
+    }
+
+    function submitDonateSuccess (data, textStatus, jqXHR) {
+      $("#donateModal").modal("hide");
+      window.alert("Donation submitted.");
+      window.location.replace("/mainMenu");
+    }
+
+    function submitDonateError (jqXHR, textStatus, errorThrown) {
+      $("#donateModal").modal("hide");
+      window.alert("Failed to submit donation.");
     }
