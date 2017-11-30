@@ -7,7 +7,7 @@ block content
       .row
         h2 You have #{numOfDonations} donations to confirm.
       for donation in unconfirmedDonations
-        .row 
+        .row
           td.col #{donation.donation_desc}
           td.col
             form(id="#{donation.donation_id}")
@@ -21,6 +21,6 @@ block content
         function submitConfirmation(id) {
           $.post("/confirmDonation", { donId: id }, function(data) {
             alert("Donation confirmed");
-            console.log(data);
+            window.location.href = "http://stormy-oasis-69997.herokuapp.com/mainMenuBank"
           });
         }

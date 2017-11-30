@@ -66,7 +66,7 @@ module.exports.postLoginBank = function(req, res, next) {
                     return next(err);
                 }
                 */
-                res.redirect('/mainMenuBank');
+            res.redirect('/mainMenuBank');
             //});
         } else {
             res.render('login', { err: "Invalid food bank credentials." });
@@ -245,28 +245,26 @@ module.exports.postDonation = function(req, res, next) {
 
         var today = new Date().toJSON().slice(0, 10);
 
-	var queries = new Array();
+        var queries = new Array();
 
-	// handle single or multiple donations differently
-	if (Array.isArray(ids) == false) {
-            queries.push(client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);',
-				      [req.session.userId, donation.bankId, ids, descriptions, today, false]));
+        // handle single or multiple donations differently
+        if (Array.isArray(ids) == false) {
+            queries.push(client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);', [req.session.userId, donation.bankId, ids, descriptions, today, false]));
         } else {
             for (var i in ids) {
-		queries.push(client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);',
-					  [req.session.userId, donation.bankId, ids[i], descriptions[i], today, false]));
+                queries.push(client.query('INSERT INTO completed_donations (vendor_id, bank_id, donation_id, donation_desc, date_offered, confirmed) VALUES($1, $2, $3, $4, $5, $6);', [req.session.userId, donation.bankId, ids[i], descriptions[i], today, false]));
             }
         }
 
-	// Wait for all queries to complete before returning success to user.
-	Promise.all(queries)
-	    .then(
-		function () {
-		    res.sendStatus(200);
-		},
-		function (err) {
-		    return next(err);
-		});
+        // Wait for all queries to complete before returning success to user.
+        Promise.all(queries)
+            .then(
+                function() {
+                    res.sendStatus(200);
+                },
+                function(err) {
+                    return next(err);
+                });
     } else {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
@@ -275,47 +273,46 @@ module.exports.postDonation = function(req, res, next) {
 /* GET all completed donations */
 module.exports.completedDonations = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
-        client.query('SELECT * FROM completed_donations WHERE vendor_id=($1) AND confirmed=($2);', 
-            [req.session.userId, true], function(err, result) {
+        client.query('SELECT * FROM completed_donations WHERE vendor_id=($1) AND confirmed=($2);', [req.session.userId, true], function(err, result) {
             if (err) {
                 return next(err);
             }
-//want names from bank table, they seem to fall out of scope within the promise
-/*var queries = [];
-var names = [];
+            //want names from bank table, they seem to fall out of scope within the promise
+            /*var queries = [];
+            var names = [];
 
-for(var i = 0; i< result.rows.length; i++){
-queries.push(client.query('SELECT * FROM bank WHERE id=($1);', [result.rows[i].bank_id], function(err, result2) {
-            if (err) {
-                return next(err);
+            for(var i = 0; i< result.rows.length; i++){
+            queries.push(client.query('SELECT * FROM bank WHERE id=($1);', [result.rows[i].bank_id], function(err, result2) {
+                        if (err) {
+                            return next(err);
+                        }
+                        names[i] = result2.rows[0].name;
+                        //console.log(names.rows[0].name);
+                    }));
             }
-            names[i] = result2.rows[0].name;
-            //console.log(names.rows[0].name);
-        }));
-}
-var donations = [];
-Promise.all(queries)
-        .then(
-        function () {
-            
-            for (var i = 0; i < result.rows.length; i++) {
-                var prettyDate = result.rows[i].date_offered.toString().split("00:")[0];
-                donations[i] = {
-                    description: result.rows[i].donation_desc,
-                    date: prettyDate,
-                    id: result.rows[i].donation_id,
-                    name: names
-                };
-                console.log(names);
-            }
-            res.render('completedDonations', { name: req.session.userName, donations: donations });
-        },
-        function (err) {
-            return next(err);
-        });
+            var donations = [];
+            Promise.all(queries)
+                    .then(
+                    function () {
 
-*/
-            
+                        for (var i = 0; i < result.rows.length; i++) {
+                            var prettyDate = result.rows[i].date_offered.toString().split("00:")[0];
+                            donations[i] = {
+                                description: result.rows[i].donation_desc,
+                                date: prettyDate,
+                                id: result.rows[i].donation_id,
+                                name: names
+                            };
+                            console.log(names);
+                        }
+                        res.render('completedDonations', { name: req.session.userName, donations: donations });
+                    },
+                    function (err) {
+                        return next(err);
+                    });
+
+            */
+
             var donations = [];
             for (var i = 0; i < result.rows.length; i++) {
                 var prettyDate = result.rows[i].date_offered.toString().split("00:")[0];
@@ -487,7 +484,7 @@ module.exports.confirmDonation = function(req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                res.redirect('mainMenuBank');
+                res.sendStatus(200);
             });
         });
 
@@ -495,4 +492,3 @@ module.exports.confirmDonation = function(req, res, next) {
         res.render('login', { err: "You must be logged in as a food truck to access that page" });
     }
 };
-
