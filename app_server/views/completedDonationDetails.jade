@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1 Completed Donation Details
+  
+  #content
+    p.
+      Id: #{details.id}
+    p.
+      Description: #{details.description}
+    p.
+      Date: #{details.date}
+    
+
+    
+
+    a.btn.btn-primary(role='button' href='/completedDonations') << Back to Completed Donations
+

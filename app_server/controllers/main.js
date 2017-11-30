@@ -212,6 +212,29 @@ module.exports.donationDetails = function(req, res, next) {
     }
 };
 
+/* GET completed donation details */
+module.exports.completedDonationDetails = function(req, res, next) {
+    if (req.session.userId && req.session.userType == "V" && req.query.id) {
+        client.query('SELECT * FROM completed_donations WHERE donation_id=($1);', [req.query.id], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+
+            //res.json(result.rows);
+            var prettyDate = result.rows[0].date_offered.toString().split("00:")[0];
+            var details = {
+                id: result.rows[0].donation_id,
+                description: result.rows[0].donation_desc,
+                date: prettyDate
+            };
+
+            res.render('completedDonationDetails', { details });
+        });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
+};
+
 module.exports.postDonation = function(req, res, next) {
     if (req.session.userId && req.session.userType == "V") {
         var donation = req.body,
@@ -251,13 +274,64 @@ module.exports.postDonation = function(req, res, next) {
 
 /* GET all completed donations */
 module.exports.completedDonations = function(req, res, next) {
-    client.query('SELECT * FROM completed_donations;', [], function(err, result) {
-        if (err) {
+    if (req.session.userId && req.session.userType == "V") {
+        client.query('SELECT * FROM completed_donations WHERE vendor_id=($1) AND confirmed=($2);', 
+            [req.session.userId, true], function(err, result) {
+            if (err) {
+                return next(err);
+            }
+//want names from bank table, they seem to fall out of scope within the promise
+/*var queries = [];
+var names = [];
+
+for(var i = 0; i< result.rows.length; i++){
+queries.push(client.query('SELECT * FROM bank WHERE id=($1);', [result.rows[i].bank_id], function(err, result2) {
+            if (err) {
+                return next(err);
+            }
+            names[i] = result2.rows[0].name;
+            //console.log(names.rows[0].name);
+        }));
+}
+var donations = [];
+Promise.all(queries)
+        .then(
+        function () {
+            
+            for (var i = 0; i < result.rows.length; i++) {
+                var prettyDate = result.rows[i].date_offered.toString().split("00:")[0];
+                donations[i] = {
+                    description: result.rows[i].donation_desc,
+                    date: prettyDate,
+                    id: result.rows[i].donation_id,
+                    name: names
+                };
+                console.log(names);
+            }
+            res.render('completedDonations', { name: req.session.userName, donations: donations });
+        },
+        function (err) {
             return next(err);
-        }
-        res.json(result.rows);
-    });
+        });
+
+*/
+            
+            var donations = [];
+            for (var i = 0; i < result.rows.length; i++) {
+                var prettyDate = result.rows[i].date_offered.toString().split("00:")[0];
+                donations[i] = {
+                    description: result.rows[i].donation_desc,
+                    date: prettyDate,
+                    id: result.rows[i].donation_id
+                };
+            }
+            res.render('completedDonations', { name: req.session.userName, donations: donations });
+        });
+    } else {
+        res.render('login', { err: "You must be logged in as a food truck to access that page" });
+    }
 };
+
 
 /* GET nearby banks */
 module.exports.banks = function(req, res, next) {

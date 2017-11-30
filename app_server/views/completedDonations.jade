@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  .container
+    h1 #{name}'s Completed Donations
+  
+  
+  
+  .container
+  form(action="/searchByDate", method="get" id="searchRange" novalidate)
+    legend Select Date Range
+
+    .input-group.input-daterange
+    .form-group
+      input.form-control(type='date', id ='start',name='start', placeholder='Start Date') 
+    input-group-addon to
+    .form-group
+      input.form-control(type='date', id ='end',name='end', placeholder='End Date') 
+    input.btn.btn-primary(type="submit", id="sendNewBank")
+    .datepicker       
+
+  
+    table.table-responsive.table-hover
+      captain
+      thead-light
+      tr.table-primary
+        th.col-sm-4 Description
+        th.col-sm-3 Date Completed
+        th.col-sm-3 Donated To
+        th.col-sm-2 Details
+
+      for d in donations
+          tr
+            td.col-sm-4= d.description
+            td.col-sm-3= d.date
+            td.col-sm-4= d.name
+            td.col <a href=completedDonationDetails?id=#{d.id}>Details 
+
