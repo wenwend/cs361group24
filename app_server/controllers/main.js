@@ -407,7 +407,7 @@ module.exports.confirmDonation = function(req, res, next) {
             if (err) {
                 return next(err);
             }
-            client.query('DELETE from donation WHERE id = ($3);', [confirmed.donId], function(err, result) {
+            client.query('DELETE from donation WHERE id = ($1);', [confirmed.donId], function(err, result) {
                 if (err) {
                     return next(err);
                 }
